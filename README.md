@@ -1,5 +1,5 @@
-# orto-idroponico
-Codice per il progetto orto idroponico Campo delle Fragole
+# Orto idroponico
+Codice per il progetto orto idroponico per ARCI Campo delle Fragole
 
 ## Compilazione
 Il progetto compila sia con platformio sia con IDE Arduino.
