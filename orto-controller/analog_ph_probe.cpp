@@ -1,23 +1,23 @@
+#include  <Arduino.h>
 #include "analog_ph_probe.hpp"
 #include "boards_pinouts.hpp"
 
 AnalogPhProbe::AnalogPhProbe(int analogPin, int numberOfSamplesToAverage)  {
     this->analogPin = analogPin;
-    this->numberOfSamplesToaverage = numberOfSamplesToaverage;
+    this->numberOfSamplesToAverage = numberOfSamplesToAverage;
   
 
 }
 
 float AnalogPhProbe::getAveragePhValue() {
     unsigned int average = 0;
-    for (int i=0; i < numberOfSamplesToaverage; i++)
+    for (int i=0; i < this->numberOfSamplesToAverage; i++)
     {
-        int digitalValueFromADC = analogRead(analogPin);
-        Serial.println(digitalValueFromADC);
+        int digitalValueFromADC = analogRead(this->analogPin);
         average +=  digitalValueFromADC;
-    }
-//erial.println(average);
-    float averageValue = float(average) / numberOfSamplesToaverage;
+    } 
+
+    float averageValue = float(average)/ this->numberOfSamplesToAverage;
 
     float phVoltageValue = averageValue * ADC_MAX_VOLTAGE / ADC_MAX_VALUES;
     return phVoltageValue;

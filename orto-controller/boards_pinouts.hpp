@@ -1,0 +1,33 @@
+#ifndef BOARDS_PARAMETERS_H
+#define BOARDS_PARAMETERS_H
+
+
+#if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
+// PINOUTS FOR ARDUINO UNO
+#define PIN_I2C_SDA 18
+#define PIN_I2C_SCL 19
+#define PIN_LED  13
+#define PIN_TEMPERATURE 3
+#define PIN_PH_PROBE A2
+#define PIN_CONDUCTIVITY_PROBE A3
+//Baudrate 
+#define SERIAL_BAUDRATE 9600
+//SPECS
+#define ADC_MAX_VALUES 1024
+#define ADC_MAX_VOLTAGE 5
+#else 
+// PINOUTS FOR ESP32
+#define PIN_I2C_SDA 21
+#define PIN_I2C_SCL 22
+#define PIN_LED  1
+#define PIN_TEMPERATURE 32
+#define PIN_PH_PROBE 20
+#define PIN_CONDUCTIVITY_PROBE 23
+//Baudrate 
+#define SERIAL_BAUDRATE 115200
+//SPECS
+#define ADC_MAX_VALUES 4096
+#define ADC_MAX_VOLTAGE 3.3
+#endif
+
+#endif
