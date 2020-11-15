@@ -30,22 +30,21 @@ AnalogConductivityProbe conductivityProbe(PIN_CONDUCTIVITY_PROBE,10);
 void setup() {
   Serial.begin(SERIAL_BAUDRATE);
   Serial.println("Starting...");
+            
+ // lcd.backlight();
 
-  lcd.init();             
-  lcd.backlight();
-
-  temperatureSensor.begin();
+ // temperatureSensor.begin();
 }
 
 void loop() {
   float phValue = phProbe.getAveragePhValue();
-  float conductivityValue = conductivityProbe.getAverageConductivityValue();
-  Serial.println(conductivityValue);
+  //float conductivityValue = conductivityProbe.getAverageConductivityValue();
+  Serial.println(phValue);
   //Serial.println(a2);
-  temperatureSensor.requestTemperatures(); 
-  lcd.clear();
-  float temperatureC = temperatureSensor.getTempCByIndex(0);
-  lcd.print(temperatureC);
+  //temperatureSensor.requestTemperatures(); 
+  //lcd.clear();
+  //float temperatureC = temperatureSensor.getTempCByIndex(0);
+  //lcd.print(temperatureC);
   delay(2000);
 } 
 
