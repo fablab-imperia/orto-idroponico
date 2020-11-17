@@ -1,13 +1,17 @@
 #include  <Arduino.h>
-#include "analog_conductivity_probe.hpp"
+#include "analog_probe.hpp"
 #include "boards_pinouts.hpp"
 
-AnalogConductivityProbe::AnalogConductivityProbe(int analogPin, int numberOfSamplesToAverage)  {
+AnalogProbe::AnalogProbe(int analogPin, int numberOfSamplesToAverage)  {
     this->analogPin = analogPin;
     this->numberOfSamplesToAverage = numberOfSamplesToAverage;
 }
 
-float AnalogConductivityProbe::getAverageConductivityValue() {
+void AnalogProbe::initProbe(LineFit fit) {
+    this->bestFit = fit;
+}
+
+float AnalogProbe::getAverageValue() {
     unsigned int average = 0;
     for (int i=0; i < this->numberOfSamplesToAverage; i++)
     {
@@ -18,5 +22,7 @@ float AnalogConductivityProbe::getAverageConductivityValue() {
     float averageValue = float(average)/ this->numberOfSamplesToAverage;
 
     float phVoltageValue = averageValue * ADC_MAX_VOLTAGE / ADC_MAX_VALUES;
-    return phVoltageValue;
+
+    return (this->bestFit.slope * phVoltageValue + this->bestFit.intercept);
 }
+
