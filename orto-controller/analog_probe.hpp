@@ -5,11 +5,16 @@
 
 #define NUMBER_OF_CALIBRATION_POINTS 3
 
+struct AnalogValues {
+    float voltage;
+    float value;
+};
+
 class AnalogProbe {
     public:
         AnalogProbe(int analogPin, int numberOfSamplesToAverage=10);
         void initProbe(LineFit fit);
-        float getAverageValue();
+        AnalogValues getAverageValue();
     private:
         int analogPin = -1;
         int numberOfSamplesToAverage = -1;

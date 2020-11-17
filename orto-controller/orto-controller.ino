@@ -45,9 +45,13 @@ void setup() {
 }
 
 void loop() {
-  float phValue = phProbe.getAverageValue();
+  AnalogValues phValues = phProbe.getAverageValue();
   //float conductivityValue = conductivityProbe.getAverageConductivityValue();
-  Serial.println(phValue);
+  Serial.print("voltage: ");
+  Serial.print(phValues.voltage);
+  Serial.print(" - ");
+  Serial.println(" ph: ");
+  Serial.println(phValues.value);
   //Serial.println(a2);
   //temperatureSensor.requestTemperatures(); 
   //lcd.clear();

@@ -11,7 +11,7 @@ void AnalogProbe::initProbe(LineFit fit) {
     this->bestFit = fit;
 }
 
-float AnalogProbe::getAverageValue() {
+AnalogValues AnalogProbe::getAverageValue() {
     unsigned int average = 0;
     for (int i=0; i < this->numberOfSamplesToAverage; i++)
     {
@@ -21,8 +21,14 @@ float AnalogProbe::getAverageValue() {
 
     float averageValue = float(average)/ this->numberOfSamplesToAverage;
 
-    float phVoltageValue = averageValue * ADC_MAX_VOLTAGE / ADC_MAX_VALUES;
+    float voltageValue = averageValue * ADC_MAX_VOLTAGE / ADC_MAX_VALUES;
 
-    return (this->bestFit.slope * phVoltageValue + this->bestFit.intercept);
+    float realValue = this->bestFit.slope * voltageValue + this->bestFit.intercept;
+
+    AnalogValues analogValue;
+    analogValue.voltage = voltageValue;
+    analogValue.value = realValue;
+
+    return analogValue;
 }
 
