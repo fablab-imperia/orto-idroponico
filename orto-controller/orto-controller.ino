@@ -63,7 +63,7 @@ void loop() {
   Serial.print(" - ");
   Serial.print(" conductivity: ");
   Serial.println(condValues.value);
-  //Serial.println(a2);
+  
   //temperatureSensor.requestTemperatures(); 
   //lcd.clear();
   //float temperatureC = temperatureSensor.getTempCByIndex(0);
