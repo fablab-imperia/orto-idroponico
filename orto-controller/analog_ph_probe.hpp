@@ -20,7 +20,8 @@
             AnalogPhProbe(int analogPin, int numberOfSamplesToAverage=10);
             float getAveragePhValue();
         private:
-            const PhVoltagePair calibrationPoints[NUMBER_OF_CALIBRATION_POINTS] = { {6.88f, 1.80f}, {4.00f, 1.46f}, {9.23f, 2.13f}};
+            const PhVoltagePair calibrationPoints[NUMBER_OF_CALIBRATION_POINTS] = { {7.00f, 1.86f}, {4.01f, 1.51f}, {10.01f, 2.23f},  };
+            //{6.88f, 1.80f}, {4.00f, 1.46f}, {9.23f, 2.13f} parametri Ste
             BestLineFitParameters findBestFit();
             int analogPin = -1;
             int numberOfSamplesToAverage = -1;

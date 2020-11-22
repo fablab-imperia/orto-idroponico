@@ -14,13 +14,14 @@ float AnalogPhProbe::getAveragePhValue() {
     {
         int digitalValueFromADC = analogRead(this->analogPin);
         average +=  digitalValueFromADC;
+        delay (20);
     } 
 
     float averageValue = float(average)/ this->numberOfSamplesToAverage;
 
     float phVoltageValue = averageValue * ADC_MAX_VOLTAGE / ADC_MAX_VALUES;
-
-    return (this->bestFit.slope * phVoltageValue + this->bestFit.intercept);
+    return phVoltageValue;
+    //return (this->bestFit.slope * phVoltageValue + this->bestFit.intercept);
 }
 
 // best fit formula taken from https://www.varsitytutors.com/hotmath/hotmath_help/topics/line-of-best-fit
