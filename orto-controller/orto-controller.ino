@@ -39,6 +39,9 @@ void setup() {
   LineFit phBestFit = Calibrator::findBestFit(phCalibrationPoints, 3);
   phProbe.initProbe(phBestFit);
 
+  XYPair condCalibrationPoints[] = { {6.88f, 1.80f}, {4.00f, 1.46f}, {9.23f, 2.13f}};
+  LineFit condBestFit = Calibrator::findBestFit(condCalibrationPoints, 3);
+  conductivityProbe.initProbe(condBestFit);
  // lcd.backlight();
 
  // temperatureSensor.begin();
@@ -46,12 +49,20 @@ void setup() {
 
 void loop() {
   AnalogValues phValues = phProbe.getAverageValue();
+  AnalogValues condValues = conductivityProbe.getAverageValue();
+
   //float conductivityValue = conductivityProbe.getAverageConductivityValue();
   Serial.print("voltage: ");
   Serial.print(phValues.voltage);
   Serial.print(" - ");
-  Serial.println(" ph: ");
+  Serial.print(" ph: ");
   Serial.println(phValues.value);
+  
+  Serial.print("voltage: ");
+  Serial.print(condValues.voltage);
+  Serial.print(" - ");
+  Serial.print(" conductivity: ");
+  Serial.println(condValues.value);
   //Serial.println(a2);
   //temperatureSensor.requestTemperatures(); 
   //lcd.clear();
