@@ -1,7 +1,7 @@
 #include "calibrator.hpp"
 
 // best fit formula taken from https://www.varsitytutors.com/hotmath/hotmath_help/topics/line-of-best-fit
-LineFit Calibrator::findBestFit(XYPair calibrationPoints[], int numberOfPoints) {
+LineFit Calibrator::findBestFit(XYPair calibrationPoints[], unsigned int numberOfPoints) {
     //Find mean values for X and Y
     float meanX = 0.0f;
     float meanY = 0.0f;

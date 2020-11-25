@@ -42,7 +42,8 @@ void setup() {
   XYPair condCalibrationPoints[] = { {6.88f, 1.80f}, {4.00f, 1.46f}, {9.23f, 2.13f}};
   LineFit condBestFit = Calibrator::findBestFit(condCalibrationPoints, 3);
   conductivityProbe.initProbe(condBestFit);
- // lcd.backlight();
+  lcd.init();
+  lcd.backlight();
 
  // temperatureSensor.begin();
 }
@@ -51,21 +52,34 @@ void loop() {
   AnalogValues phValues = phProbe.getAverageValue();
   AnalogValues condValues = conductivityProbe.getAverageValue();
 
-  //float conductivityValue = conductivityProbe.getAverageConductivityValue();
-  Serial.print("voltage: ");
-  Serial.print(phValues.voltage);
-  Serial.print(" - ");
-  Serial.print(" ph: ");
-  Serial.println(phValues.value);
-  
-  Serial.print("voltage: ");
-  Serial.print(condValues.voltage);
-  Serial.print(" - ");
-  Serial.print(" conductivity: ");
-  Serial.println(condValues.value);
-  
+  //clear display
+  lcd.clear();
+
+  //buffer for output
+  char messageBuffer[20];
+  //buffer for floats that must be converted to strings
+  char voltageBuffer[6];
+  char valueBuffer[10];
+
+  dtostrf(phValues.voltage, 4, 1, voltageBuffer);
+  dtostrf(phValues.value, 6, 1, valueBuffer);
+  snprintf(messageBuffer,20,"VPH:%s PH:%s", voltageBuffer, valueBuffer);
+  Serial.println(messageBuffer);
+  lcd.print(messageBuffer);
+  lcd.setCursor(0,1);
+  dtostrf(condValues.voltage, 4, 1, voltageBuffer);
+  dtostrf(condValues.value, 6, 1, valueBuffer);
+  snprintf(messageBuffer,20,"VCD:%s CD:%s", voltageBuffer, valueBuffer);
+  Serial.println(messageBuffer);
+  lcd.print(messageBuffer);
+
+
+
+/*   snprintf(buffer,20,"V: %.1f - CND: %.1f", (double) condValues.voltage, (double) condValues.value);
+  Serial.println(buffer);
+  lcd.println(buffer); */
+
   //temperatureSensor.requestTemperatures(); 
-  //lcd.clear();
   //float temperatureC = temperatureSensor.getTempCByIndex(0);
   //lcd.print(temperatureC);
   delay(2000);

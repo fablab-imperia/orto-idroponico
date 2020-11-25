@@ -10,7 +10,7 @@ struct XYPair {
 
 class Calibrator {
     public:
-        static LineFit findBestFit(XYPair calibrationPoints[], int numberOfPoints);
+        static LineFit findBestFit(XYPair calibrationPoints[], unsigned int numberOfPoints);
 };
 
 #endif
