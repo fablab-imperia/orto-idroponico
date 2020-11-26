@@ -1,6 +1,6 @@
 #include  <Arduino.h>
 #include "analog_probe.hpp"
-#include "boards_pinouts.hpp"
+#include "parameters.hpp"
 
 AnalogProbe::AnalogProbe(unsigned int analogPin, unsigned int numberOfSamplesToAverage)  {
     this->analogPin = analogPin;

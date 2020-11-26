@@ -9,11 +9,11 @@
 #include <DallasTemperature.h>
 
 //Includes for our own pin definitions and setups
-#include "boards_pinouts.hpp"
-#include "devices_parameters.hpp"
+#include "pinouts.hpp"
+#include "parameters.hpp"
 #include "analog_probe.hpp"
-
 #include "calibrator.hpp"
+#include "relay.hpp"
 
 //LCD dislay
 LiquidCrystal_I2C lcd(LCD_I2C_ADDRESS,LCD_COLS,LCD_ROWS);
@@ -28,6 +28,7 @@ AnalogProbe phProbe(PIN_PH_PROBE,10);
 //Conductivity sensor
 AnalogProbe conductivityProbe(PIN_CONDUCTIVITY_PROBE,10);
 
+Relay peristalticPumpAcid(PIN_PERISTALTIC_PUMP_ACID);  
 
 
 void setup() {
@@ -45,6 +46,7 @@ void setup() {
   lcd.backlight();
 
   temperatureSensor.begin();
+  peristalticPumpAcid.init();
 }
 
 void loop() {
@@ -80,6 +82,7 @@ void loop() {
   Serial.println(messageBuffer);
   lcd.print(messageBuffer); 
 
+  peristalticPumpAcid.toggle();
   delay(2000);
 } 
 
