@@ -14,6 +14,7 @@
 #include "analog_probe.hpp"
 #include "calibrator.hpp"
 #include "relay.hpp"
+#include "banner.hpp"
 
 //LCD dislay
 LiquidCrystal_I2C lcd(LCD_I2C_ADDRESS,LCD_COLS,LCD_ROWS);
@@ -30,16 +31,17 @@ AnalogProbe conductivityProbe(PIN_CONDUCTIVITY_PROBE,10);
 
 Relay peristalticPumpAcid(PIN_PERISTALTIC_PUMP_ACID);  
 
-
 void setup() {
+
   Serial.begin(SERIAL_BAUDRATE);
   Serial.println("Starting...");
-  
-  XYPair phCalibrationPoints[] = { {6.88f, 1.80f}, {4.00f, 1.46f}, {9.23f, 2.13f}};
+  Banner::printSerial();
+
+  XYPair phCalibrationPoints[] = { {1.80f, 6.88f}, {1.46f, 4.00f,}, {2.13f, 9.23f}};
   LineFit phBestFit = Calibrator::findBestFit(phCalibrationPoints, 3);
   phProbe.initProbe(phBestFit);
-
-  XYPair condCalibrationPoints[] = { {6.88f, 1.80f}, {4.00f, 1.46f}, {9.23f, 2.13f}};
+  
+  XYPair condCalibrationPoints[] = { {1.80f, 6.88f}, {1.46f, 4.00f,}, {2.13f, 9.23f}};
   LineFit condBestFit = Calibrator::findBestFit(condCalibrationPoints, 3);
   conductivityProbe.initProbe(condBestFit);
   lcd.init();
