@@ -39,8 +39,9 @@ void setup() {
   LineFit phBestFit = Calibrator::findBestFit(phCalibrationPoints, 3);
   phProbe.initProbe(phBestFit);
 
-  XYPair condCalibrationPoints[] = { {6.88f, 1.80f}, {4.00f, 1.46f}, {9.23f, 2.13f}};
+  XYPair condCalibrationPoints[] = { { 0.2f, 220.0f}, { 0.6f, 564.0f}, { 0.0f, 68.0f}};
   LineFit condBestFit = Calibrator::findBestFit(condCalibrationPoints, 3);
+
   conductivityProbe.initProbe(condBestFit);
   lcd.init();
   lcd.backlight();
@@ -54,12 +55,12 @@ void loop() {
   AnalogValues condValues = conductivityProbe.getAverageValue();
 
   temperatureSensor.requestTemperatures(); 
-  float temperatureC = temperatureSensor.getTempCByIndex(0);
+  double temperatureC = temperatureSensor.getTempCByIndex(0);
   //clear display
   lcd.clear();
   //buffer for output
   char messageBuffer[20];
-  //buffer for floats that must be converted to strings
+  //buffer for doubles that must be converted to strings
   char voltageBuffer[6];
   char valueBuffer[10];
 
