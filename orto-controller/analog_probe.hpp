@@ -12,7 +12,7 @@ struct AnalogValues {
 
 class AnalogProbe {
     public:
-        AnalogProbe(int analogPin, int numberOfSamplesToAverage=10);
+        AnalogProbe(unsigned int analogPin, unsigned int numberOfSamplesToAverage=10);
         void initProbe(LineFit fit);
         AnalogValues getAverageValue();
     private:

@@ -2,7 +2,7 @@
 #include "analog_probe.hpp"
 #include "boards_pinouts.hpp"
 
-AnalogProbe::AnalogProbe(int analogPin, int numberOfSamplesToAverage)  {
+AnalogProbe::AnalogProbe(unsigned int analogPin, unsigned int numberOfSamplesToAverage)  {
     this->analogPin = analogPin;
     this->numberOfSamplesToAverage = numberOfSamplesToAverage;
 }

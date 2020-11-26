@@ -22,7 +22,6 @@ OneWire oneWire(PIN_TEMPERATURE);
 //Temperature sensor
 DallasTemperature temperatureSensor(&oneWire);
 
-
 //PH sensor
 AnalogProbe phProbe(PIN_PH_PROBE,10);
 
@@ -45,16 +44,17 @@ void setup() {
   lcd.init();
   lcd.backlight();
 
- // temperatureSensor.begin();
+  temperatureSensor.begin();
 }
 
 void loop() {
   AnalogValues phValues = phProbe.getAverageValue();
   AnalogValues condValues = conductivityProbe.getAverageValue();
 
+  temperatureSensor.requestTemperatures(); 
+  float temperatureC = temperatureSensor.getTempCByIndex(0);
   //clear display
   lcd.clear();
-
   //buffer for output
   char messageBuffer[20];
   //buffer for floats that must be converted to strings
@@ -63,25 +63,23 @@ void loop() {
 
   dtostrf(phValues.voltage, 4, 1, voltageBuffer);
   dtostrf(phValues.value, 6, 1, valueBuffer);
-  snprintf(messageBuffer,20,"VPH:%s PH:%s", voltageBuffer, valueBuffer);
+  snprintf(messageBuffer,20,"PH :%s VPH:%s", valueBuffer, voltageBuffer);
   Serial.println(messageBuffer);
   lcd.print(messageBuffer);
   lcd.setCursor(0,1);
+
   dtostrf(condValues.voltage, 4, 1, voltageBuffer);
   dtostrf(condValues.value, 6, 1, valueBuffer);
-  snprintf(messageBuffer,20,"VCD:%s CD:%s", voltageBuffer, valueBuffer);
+  snprintf(messageBuffer,20,"CND:%s VCD:%s", valueBuffer, voltageBuffer);
   Serial.println(messageBuffer);
   lcd.print(messageBuffer);
+  lcd.setCursor(0,2);
 
+  dtostrf(temperatureC, 6, 1, valueBuffer);
+  snprintf(messageBuffer ,20,"TMP:%s", valueBuffer);
+  Serial.println(messageBuffer);
+  lcd.print(messageBuffer); 
 
-
-/*   snprintf(buffer,20,"V: %.1f - CND: %.1f", (double) condValues.voltage, (double) condValues.value);
-  Serial.println(buffer);
-  lcd.println(buffer); */
-
-  //temperatureSensor.requestTemperatures(); 
-  //float temperatureC = temperatureSensor.getTempCByIndex(0);
-  //lcd.print(temperatureC);
   delay(2000);
 } 
 
