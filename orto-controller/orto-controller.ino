@@ -8,6 +8,8 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+#include <TaskScheduler.h>
+
 //Includes for our own pin definitions and setups
 #include "pinouts.hpp"
 #include "parameters.hpp"
@@ -29,7 +31,18 @@ AnalogProbe phProbe(PIN_PH_PROBE,10);
 //Conductivity sensor
 AnalogProbe conductivityProbe(PIN_CONDUCTIVITY_PROBE,10);
 
-Relay peristalticPumpAcid(PIN_PERISTALTIC_PUMP_ACID);  
+Relay mainWaterPump(PIN_MAIN_WATER_PUMP);  
+
+Scheduler scheduler;
+
+void displaySensorValue();
+Task sensorReadTask(TIME_BETWEEN_SENSORS_READ_MS, TASK_FOREVER, displaySensorValue, &scheduler, true);
+
+void startMainPump();
+void stopMainPump();
+Task mainPumpTask(TIME_BETWEEN_PUMP_ACTIVATION_MS, TASK_FOREVER, startMainPump, &scheduler, true);
+
+
 
 void setup() {
 
@@ -51,10 +64,32 @@ void setup() {
   lcd.backlight();
 
   temperatureSensor.begin();
-  peristalticPumpAcid.init();
+  mainWaterPump.init();
 }
 
 void loop() {
+  scheduler.execute();
+} 
+
+void startMainPump() {
+  mainWaterPump.turnOn();
+  Serial.print("---------WATER PUMP STARTS at ");
+  Serial.print(millis());
+  Serial.println(" ms");
+  mainPumpTask.setCallback(stopMainPump);
+  mainPumpTask.setInterval(TIME_PUMP_ON_MS);
+}
+
+void stopMainPump() {
+  mainWaterPump.turnOff();
+  Serial.print("---------WATER PUMP STOPS at ");
+  Serial.print(millis());
+  Serial.println(" ms");
+  mainPumpTask.setCallback(startMainPump);
+  mainPumpTask.setInterval(TIME_BETWEEN_PUMP_ACTIVATION_MS);
+}
+
+void displaySensorValue() {
   AnalogValues phValues = phProbe.getAverageValue();
   AnalogValues condValues = conductivityProbe.getAverageValue();
 
@@ -87,7 +122,4 @@ void loop() {
   Serial.println(messageBuffer);
   lcd.print(messageBuffer); 
 
-  //peristalticPumpAcid.toggle();
-  delay(2000);
-} 
-
+}

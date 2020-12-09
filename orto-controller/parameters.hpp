@@ -5,6 +5,11 @@
 #define LCD_ROWS 4
 #define LCD_COLS 20
 
+#define TIME_PUMP_ON_MS 6000
+#define TIME_BETWEEN_PUMP_ACTIVATION_MS 10000 
+#define TIME_BETWEEN_SENSORS_READ_MS 2000 
+
+
 #if defined(__AVR_ATmega168__) || defined(__AVR_ATmega328P__)
 #define SERIAL_BAUDRATE 9600
 #define ADC_MAX_VALUES 1024
