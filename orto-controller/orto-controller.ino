@@ -50,11 +50,14 @@ void setup() {
   Serial.println("Starting...");
   Banner::printSerial();
 
-  XYPair phCalibrationPoints[] = { {1.80f, 6.88f}, {1.46f, 4.00f,}, {2.13f, 9.23f}};//stefano
-  //XYPair phCalibrationPoints[] = {{1.51f, 4.01f,}, {1.86f, 7.00f}, {2.08f, 8.80f}, {2.23f, 10.01f,}};//Vale
-  LineFit phBestFit = Calibrator::findBestFit(phCalibrationPoints, 3);//Stefano
-  //LineFit phBestFit = Calibrator::findBestFit(phCalibrationPoints, 4);//vale
+  //XYPair phCalibrationPoints[] = { {1.80f, 6.88f}, {1.46f, 4.00f,}, {2.13f, 9.23f}};//stefano
+  XYPair phCalibrationPoints[] = {{1.51f, 4.01f,}, {1.86f, 7.00f}, {2.08f, 8.80f}, {2.23f, 10.01f,}};//Vale
+  //LineFit phBestFit = Calibrator::findBestFit(phCalibrationPoints, 3);//Stefano
+  LineFit phBestFit = Calibrator::findBestFit(phCalibrationPoints, 4);//vale
+
   phProbe.initProbe(phBestFit);
+
+
 
   XYPair condCalibrationPoints[] = { { 0.2f, 220.0f}, { 0.6f, 564.0f}, { 0.0f, 68.0f}};
   LineFit condBestFit = Calibrator::findBestFit(condCalibrationPoints, 3);
