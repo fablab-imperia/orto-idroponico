@@ -35,6 +35,14 @@ Relay mainWaterPump(PIN_MAIN_WATER_PUMP);
 
 Scheduler scheduler;
 
+//TIMER
+int timer=0;
+int s=0;
+int m=0;
+int h=0;
+int g=0;
+//TIMER
+
 void displaySensorValue();
 Task sensorReadTask(TIME_BETWEEN_SENSORS_READ_MS, TASK_FOREVER, displaySensorValue, &scheduler, true);
 
@@ -110,6 +118,37 @@ void displaySensorValue() {
   dtostrf(phValues.value, 6, 1, valueBuffer);
   snprintf(messageBuffer,20,"PH :%s VPH:%s", valueBuffer, voltageBuffer);
   Serial.println(messageBuffer);
+  
+  //orologio
+  s=millis()/1000-timer;
+  if(s>59)
+  {
+  m=m+1;
+  timer=h*60*60+m*60;
+  s=0;
+  }
+  if(m>59)
+  {
+  m=0;
+  h=h+1;
+  }
+  if(h>23)
+  {
+  h=0;
+  g=g+1;
+  }
+  Serial.println();
+  Serial.print(" GIORNO: ");
+  Serial.println(g);  
+  Serial.print(" ORA: ");
+  Serial.print(h);
+  Serial.print(":");
+  Serial.print(m);
+  Serial.print(":");
+  Serial.println(s);
+  //fine orologio
+  
+ 
   lcd.print(messageBuffer);
   lcd.setCursor(0,1);
 
