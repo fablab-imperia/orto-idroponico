@@ -36,15 +36,10 @@ Relay mainWaterPump(PIN_MAIN_WATER_PUMP);
 Scheduler scheduler;
 
 //TIMER
-
-int s=0;
-int m=0;
-int h=0;
-int g=0;
-//TIMER
+unsigned long lastswitch=0;
 
 void displaySensorValue();
-//Task sensorReadTask(TIME_BETWEEN_SENSORS_READ_MS, TASK_FOREVER, displaySensorValue, &scheduler, true);
+Task sensorReadTask(TIME_BETWEEN_SENSORS_READ_MS, TASK_FOREVER, displaySensorValue, &scheduler, true);
 
 void startMainPump();
 void stopMainPump();
@@ -58,8 +53,22 @@ void convertMillisToTimeString(char* timeString, int timeStringSize, long millis
   total = total / 60;
   int hours = total % 24;
   int days = total / 24;
-  snprintf(timeString, timeStringSize, "%dd %dh %dm %ds", days,hours, minutes, seconds); 
+  if (days==0) {
+    snprintf(timeString, timeStringSize, "%d:%d:%d",hours, minutes, seconds);
+    }
+  else
+  {
+    snprintf(timeString, timeStringSize, "%dd %d:%d:%d", days,hours, minutes, seconds);
+  } 
 }
+void convertMillisToShortTimeString(char* timeString, int timeStringSize, long millis) {
+  long total = millis / 1000;
+  total = total / 60;
+  int minutes = total % 60;
+  total = total / 60;
+  int hours = total % 24;
+  snprintf(timeString, timeStringSize, "%d:%d",hours, minutes);
+  }
 
 void setup() {
 
@@ -94,17 +103,20 @@ void loop() {
 void startMainPump() {
   mainWaterPump.turnOn();
   char timeString[20];
-  convertMillisToTimeString(timeString,20,millis());
+  lastswitch=millis();
+  convertMillisToTimeString(timeString,20,lastswitch);
   Serial.print("---------WATER PUMP STARTS at ");
   Serial.println(timeString);
   mainPumpTask.setCallback(stopMainPump);
   mainPumpTask.setInterval(TIME_PUMP_ON_MS);
+  
 }
 
 void stopMainPump() {
   mainWaterPump.turnOff();
   char timeString[20];
-  convertMillisToTimeString(timeString,20,millis());
+  lastswitch=millis();
+  convertMillisToTimeString(timeString,20,lastswitch);
   Serial.print("---------WATER PUMP STOPS at ");
   Serial.println(timeString);
   mainPumpTask.setCallback(startMainPump);
@@ -122,27 +134,34 @@ void displaySensorValue() {
   //buffer for output
   char messageBuffer[20];
   //buffer for doubles that must be converted to strings
-  char voltageBuffer[6];
   char valueBuffer[10];
 
-  dtostrf(phValues.voltage, 4, 1, voltageBuffer);
-  dtostrf(phValues.value, 6, 1, valueBuffer);
-  snprintf(messageBuffer,20,"PH :%s VPH:%s", valueBuffer, voltageBuffer);
-  Serial.println(messageBuffer);
+  //dtostrf(phValues.voltage, 3, 1, voltageBuffer);
+  dtostrf(phValues.value, 4, 1, valueBuffer);
+  snprintf(messageBuffer,20,"PH :%s   ", valueBuffer);  // VPH:%s  , voltageBuffer
+  //Serial.println(messageBuffer);
 
+  lcd.print(messageBuffer);
+  //lcd.setCursor(0,1);
+
+  //dtostrf(condValues.voltage, 4, 1, voltageBuffer);
+  dtostrf(condValues.value, 5, 1, valueBuffer);
+  snprintf(messageBuffer,20,"CND:%s ", valueBuffer);  //VCD:%s  , voltageBuffer
+  //Serial.println(messageBuffer);
   lcd.print(messageBuffer);
   lcd.setCursor(0,1);
 
-  dtostrf(condValues.voltage, 4, 1, voltageBuffer);
-  dtostrf(condValues.value, 6, 1, valueBuffer);
-  snprintf(messageBuffer,20,"CND:%s VCD:%s", valueBuffer, voltageBuffer);
-  Serial.println(messageBuffer);
-  lcd.print(messageBuffer);
-  lcd.setCursor(0,2);
-
-  dtostrf(temperatureC, 6, 1, valueBuffer);
+  dtostrf(temperatureC, 5, 1, valueBuffer);
   snprintf(messageBuffer ,20,"TMP:%s", valueBuffer);
-  Serial.println(messageBuffer);
+  //Serial.println(messageBuffer);
   lcd.print(messageBuffer); 
+
+  lcd.setCursor(0,2);
+  char timeString[20];
+  char lastimeString[20];
+  convertMillisToTimeString(timeString,20,millis());
+  convertMillisToShortTimeString(lastimeString,20,millis()-lastswitch);
+  snprintf(messageBuffer ,20,"%s - %sm fa", timeString, lastimeString);
+  lcd.print (messageBuffer);
 
 }
