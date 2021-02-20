@@ -222,11 +222,6 @@ void readSensors() {
   temperatureSensor.requestTemperatures(); 
   temperatureC = temperatureSensor.getTempCByIndex(0);
 
-  Serial.print("PH VALUE: ");
-  Serial.println(phValues.value);
-  
-  Serial.print("COND VALUE: ");
-  Serial.println(condValues.value);
   
   // acid pump tasks are both disabled and ph values are out of range
   if (!acidPumpOnTask.isEnabled() && 
@@ -250,6 +245,15 @@ void readSensors() {
 }
 
 void displaySensorValue() {
+
+/*  
+  Serial.print("PH VALUE: ");
+  Serial.println(phValues.value);
+  
+  Serial.print("COND VALUE: ");
+  Serial.println(condValues.value);
+  */
+  
   //clear display
   lcd.clear();
   //buffer for output
