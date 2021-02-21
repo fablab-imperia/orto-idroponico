@@ -128,6 +128,11 @@ void setup() {
   fertilizerPump.init();
   acidPump.init();
 
+  // Stops all pumps at beginning
+  acidPump.turnOff();
+  fertilizerPump.turnOff();
+  mainWaterPump.turnOff();
+
   //Initialize tasks
   taskManager.init();
   taskManager.addTask(displayDataTask);
@@ -228,7 +233,7 @@ void readSensors() {
       !acidPumpOffTask.isEnabled() && 
       (phValues.value - THRESHOLD_VALUE_PH) > THRESHOLD_TOLERANCE_PH)
       {
-          Serial.print("---------PH LEVEL OVER THRESHOLD: NEED TO START ACID PUMP");
+          Serial.println("---------PH LEVEL OVER THRESHOLD: NEED TO START ACID PUMP");
           acidPumpOnTask.set(TASK_IMMEDIATE, TASK_ONCE, acidPumpOn);
           acidPumpOnTask.enableDelayed();
       } 
@@ -238,7 +243,7 @@ void readSensors() {
       !fertilizerPumpOffTask.isEnabled() && 
       (THRESHOLD_VALUE_CONDUCTIVITY - condValues.value) > THRESHOLD_TOLERANCE_CONDUCTIVITY)
       {
-          Serial.print("---------CONDUCTIVITY BELOW THRESHOLD: NEED TO START FERTIZILER PUMP");
+          Serial.println("---------CONDUCTIVITY BELOW THRESHOLD: NEED TO START FERTIZILER PUMP");
           fertilizerPumpOnTask.set(TASK_IMMEDIATE, TASK_ONCE, fertilizerPumpOn);
           fertilizerPumpOnTask.enableDelayed();
       } 
