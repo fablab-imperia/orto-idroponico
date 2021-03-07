@@ -17,6 +17,7 @@
 #include "calibrator.hpp"
 #include "relay.hpp"
 #include "banner.hpp"
+#include "controller.hpp"
 
 
 
@@ -26,6 +27,7 @@
 AnalogValues phValues;
 AnalogValues condValues;
 double temperatureC = 0.0;
+
 
 /*************************************************************
  * Hardware components
@@ -55,6 +57,8 @@ Relay acidPump = Relay(PIN_PERISTALTIC_PUMP_ACID);
 /*************************************************************
  * Scheduling and tasks declarations
  ************************************************************/
+Controller ctrl;
+
 Scheduler taskManager;
 
 //TIMER
@@ -112,6 +116,24 @@ void convertMillisToShortTimeString(char* timeString, int timeStringSize, long m
   snprintf(timeString, timeStringSize, "%d:%d",hours, minutes);
   }
 
+void convertCurrentStateToString(char* stateString, int stateStringSize) {
+  switch (ctrl.getState())
+  {
+  case ControllerState::WATER_CIRCULATING:
+    snprintf(stateString, stateStringSize, "WATER_CIRCULATING");
+    break;
+
+  case ControllerState::WATER_MIXING:
+    snprintf(stateString, stateStringSize, "WATER_MIXING");
+    break;
+
+  default:
+   snprintf(stateString, stateStringSize, "IDLE");
+    break;
+  }
+  
+}
+
 void setup() {
 
   Serial.begin(SERIAL_BAUDRATE);
@@ -165,17 +187,30 @@ void loop() {
 } 
 
 void waterPumpOn() {
-  waterPump.turnOn();
-  char timeString[20];
-  lastswitch=millis();
-  convertMillisToTimeString(timeString,20,lastswitch);
-  Serial.print("---------WATER PUMP STARTS at ");
-  Serial.println(timeString);
-  waterPumpOffTask.set(TIME_WATER_PUMP_ON_MS, TASK_ONCE, waterPumpOff);
-  waterPumpOffTask.enableDelayed();
+
+  const ControllerState currentState = ctrl.getState();
+
+  if (currentState == ControllerState::IDLE) 
+  {
+    ctrl.setState(ControllerState::WATER_CIRCULATING);
+    waterPump.turnOn();
+    char timeString[20];
+    lastswitch=millis();
+    convertMillisToTimeString(timeString,20,lastswitch);
+    Serial.print("---------WATER PUMP STARTS at ");
+    Serial.println(timeString);
+    waterPumpOffTask.set(TIME_WATER_PUMP_ON_MS, TASK_ONCE, waterPumpOff);
+    waterPumpOffTask.enableDelayed();
+  } else {
+    char stateString[20];
+    convertCurrentStateToString(stateString,20);
+    Serial.print("SKIPPING WATER PUMP START BECAUSE STATE IS ");
+    Serial.println(stateString);
+  }
 }
 
 void waterPumpOff() {
+  ctrl.setState(ControllerState::IDLE);
   waterPump.turnOff();
   char timeString[20];
   lastswitch=millis();
@@ -187,14 +222,26 @@ void waterPumpOff() {
 }
 
 void acidPumpOn() {
-  acidPump.turnOn();
-  char timeString[20];
-  lastswitch=millis();
-  convertMillisToTimeString(timeString,20,lastswitch);
-  Serial.print("---------ACID PUMP STARTS at ");
-  Serial.println(timeString);
-  acidPumpOffTask.set(TIME_PERISTALTIC_PUMP_ACID_ON_MS, TASK_ONCE, acidPumpOff);
-  acidPumpOffTask.enableDelayed();
+  const ControllerState currentState = ctrl.getState();
+  
+  if ( currentState == ControllerState::IDLE ||
+      currentState ==  ControllerState::WATER_CIRCULATING) 
+  {
+    acidPump.turnOn();
+    char timeString[20];
+    lastswitch=millis();
+    convertMillisToTimeString(timeString,20,lastswitch);
+    Serial.print("---------ACID PUMP STARTS at ");
+    Serial.println(timeString);
+    acidPumpOffTask.set(TIME_PERISTALTIC_PUMP_ACID_ON_MS, TASK_ONCE, acidPumpOff);
+    acidPumpOffTask.enableDelayed();
+  } else {
+    char stateString[20];
+    convertCurrentStateToString(stateString,20);
+    Serial.print("SKIPPING ACID PUMP START BECAUSE STATE IS ");
+    Serial.println(stateString);
+
+  }
 }
 
 void acidPumpOff() {
@@ -204,21 +251,33 @@ void acidPumpOff() {
   convertMillisToTimeString(timeString,20,lastswitch);
   Serial.print("---------ACID PUMP STOPS at ");
   Serial.println(timeString);
-  if (!waterMixingOnTask.isEnabled() && !waterPump.isOn()){
-      waterMixingOnTask.set(TASK_IMMEDIATE, TASK_ONCE, waterMixingOn);
-      waterMixingOnTask.enableDelayed();
-  } 
+  
+  waterMixingOnTask.set(TASK_IMMEDIATE, TASK_ONCE, waterMixingOn);
+  waterMixingOnTask.enableDelayed();
+   
 }
 
 void fertilizerPumpOn() {
-  fertilizerPump.turnOn();
-  char timeString[20];
-  lastswitch=millis();
-  convertMillisToTimeString(timeString,20,lastswitch);
-  Serial.print("---------FERTILIZER PUMP STARTS at ");
-  Serial.println(timeString);
-  fertilizerPumpOffTask.set(TIME_PERISTALTIC_PUMP_FERTILIZER_ON_MS, TASK_ONCE, fertilizerPumpOff);
-  fertilizerPumpOffTask.enableDelayed();
+  const ControllerState currentState = ctrl.getState();
+  
+  if (currentState == ControllerState::IDLE ||
+      currentState == ControllerState::WATER_CIRCULATING)
+  {
+    fertilizerPump.turnOn();
+    char timeString[20];
+    lastswitch=millis();
+    convertMillisToTimeString(timeString,20,lastswitch);
+    Serial.print("---------FERTILIZER PUMP STARTS at ");
+    Serial.println(timeString);
+    fertilizerPumpOffTask.set(TIME_PERISTALTIC_PUMP_FERTILIZER_ON_MS, TASK_ONCE, fertilizerPumpOff);
+    fertilizerPumpOffTask.enableDelayed();
+  } else {
+    char stateString[20];
+    convertCurrentStateToString(stateString,20);
+    Serial.print("SKIPPING FERTILIZER PUMP START BECAUSE STATE IS ");
+    Serial.println(stateString);
+
+  }
 }
 
 void fertilizerPumpOff() {
@@ -228,24 +287,36 @@ void fertilizerPumpOff() {
   convertMillisToTimeString(timeString,20,lastswitch);
   Serial.print("---------FERTILIZER PUMP STOPS at ");
   Serial.println(timeString);
-  if (!waterMixingOnTask.isEnabled() && !waterPump.isOn()){
-      waterMixingOnTask.set(TASK_IMMEDIATE, TASK_ONCE, waterMixingOn);
-      waterMixingOnTask.enableDelayed();
-  } 
+
+  waterMixingOnTask.set(TASK_IMMEDIATE, TASK_ONCE, waterMixingOn);
+  waterMixingOnTask.enableDelayed();
+   
 }
 
 void waterMixingOn() {
-  waterPump.turnOn();
-  char timeString[20];
-  lastswitch=millis();
-  convertMillisToTimeString(timeString,20,lastswitch);
-  Serial.print("---------WATER MIXING STARTS at ");
-  Serial.println(timeString);
-  waterMixingOffTask.set(TIME_MIXING_PUMP_ON_MS, TASK_ONCE, waterMixingOff);
-  waterMixingOffTask.enableDelayed();
+  const ControllerState currentState = ctrl.getState();
+  if (currentState == ControllerState::IDLE) 
+  {
+    ctrl.setState(ControllerState::WATER_MIXING);
+    waterPump.turnOn();
+    char timeString[20];
+    lastswitch=millis();
+    convertMillisToTimeString(timeString,20,lastswitch);
+    Serial.print("---------WATER MIXING STARTS at ");
+    Serial.println(timeString);
+    waterMixingOffTask.set(TIME_MIXING_PUMP_ON_MS, TASK_ONCE, waterMixingOff);
+    waterMixingOffTask.enableDelayed();
+  } else {
+    char stateString[20];
+    convertCurrentStateToString(stateString,20);
+    Serial.print("SKIPPING WATER MIXING BECAUSE STATE IS ");
+    Serial.println(stateString);
+
+  }
 }
 
 void waterMixingOff(){
+  ctrl.setState(ControllerState::IDLE);
   waterPump.turnOff();
   char timeString[20];
   lastswitch=millis();
@@ -254,20 +325,18 @@ void waterMixingOff(){
   Serial.println(timeString);
 }
 
+
+
 void readSensors() {
   phValues = phProbe.getAverageValue();
   condValues = conductivityProbe.getAverageValue();
   temperatureSensor.requestTemperatures(); 
   temperatureC = temperatureSensor.getTempCByIndex(0);
 
-  
+  const ControllerState currentState = ctrl.getState();
   // acid pump tasks are both disabled and ph values are out of range
-  if (!acidPumpOnTask.isEnabled() && 
-      !acidPumpOffTask.isEnabled() && 
-      !waterPumpOnTask.isEnabled() &&
-      !waterMixingOnTask.isEnabled() &&
-      !waterMixingOffTask.isEnabled() &&
-      
+  if (currentState == ControllerState::IDLE
+      &&
       (phValues.value - THRESHOLD_VALUE_PH) > THRESHOLD_TOLERANCE_PH)
       {
           Serial.println("---------PH LEVEL OVER THRESHOLD: NEED TO START ACID PUMP");
@@ -275,12 +344,8 @@ void readSensors() {
           acidPumpOnTask.enableDelayed();
       } 
 
-    // fertilizer pump tasks are both disabled and ph values are out of range
-  if (!fertilizerPumpOnTask.isEnabled() && 
-      !fertilizerPumpOffTask.isEnabled() && 
-      !waterPumpOnTask.isEnabled() &&
-      !waterMixingOnTask.isEnabled() &&
-      !waterMixingOffTask.isEnabled() &&
+  if ( currentState == ControllerState::IDLE  
+       &&
       (THRESHOLD_VALUE_CONDUCTIVITY - condValues.value) > THRESHOLD_TOLERANCE_CONDUCTIVITY)
       {
           Serial.println("---------CONDUCTIVITY BELOW THRESHOLD: NEED TO START FERTIZILER PUMP");
