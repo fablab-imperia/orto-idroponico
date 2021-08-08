@@ -168,8 +168,8 @@ void setup() {
   taskManager.addTask(sensorReadTask);
   taskManager.addTask(waterPumpOnTask);
   taskManager.addTask(waterPumpOffTask);
-  taskManager.addTask(acidPumpOnTask);
-  taskManager.addTask(acidPumpOffTask);
+  //taskManager.addTask(acidPumpOnTask);
+  //taskManager.addTask(acidPumpOffTask);
   taskManager.addTask(fertilizerPumpOnTask);
   taskManager.addTask(fertilizerPumpOffTask);
   taskManager.addTask(waterMixingOffTask);
@@ -295,14 +295,19 @@ void fertilizerPumpOff() {
 
 void waterMixingOn() {
   const ControllerState currentState = ctrl.getState();
-  if (currentState == ControllerState::IDLE) 
+  if (currentState != ControllerState::WATER_CIRCULATING && currentState != ControllerState::WATER_MIXING) 
   {
+    char stateString[20];
+    convertCurrentStateToString(stateString,20);
+    Serial.print("---------WATER MIXING STARTS at ");
+    Serial.print("PREVIOUS STATE IS ");
+    Serial.println(stateString);
     ctrl.setState(ControllerState::WATER_MIXING);
     waterPump.turnOn();
     char timeString[20];
     lastswitch=millis();
     convertMillisToTimeString(timeString,20,lastswitch);
-    Serial.print("---------WATER MIXING STARTS at ");
+ 
     Serial.println(timeString);
     waterMixingOffTask.set(TIME_MIXING_PUMP_ON_MS, TASK_ONCE, waterMixingOff);
     waterMixingOffTask.enableDelayed();
@@ -333,9 +338,12 @@ void readSensors() {
   temperatureSensor.requestTemperatures(); 
   temperatureC = temperatureSensor.getTempCByIndex(0);
 
+  Serial.print("TEMPERATURE IS: ");
+  Serial.println(temperatureC);
+
   const ControllerState currentState = ctrl.getState();
   // acid pump tasks are both disabled and ph values are out of range
-  if (currentState == ControllerState::IDLE
+ /* if (currentState == ControllerState::IDLE
       &&
       (phValues.value - THRESHOLD_VALUE_PH) > THRESHOLD_TOLERANCE_PH)
       {
@@ -343,7 +351,7 @@ void readSensors() {
           acidPumpOnTask.set(TASK_IMMEDIATE, TASK_ONCE, acidPumpOn);
           acidPumpOnTask.enableDelayed();
       } 
-
+*/
   if ( currentState == ControllerState::IDLE  
        &&
       (THRESHOLD_VALUE_CONDUCTIVITY - condValues.value) > THRESHOLD_TOLERANCE_CONDUCTIVITY)
