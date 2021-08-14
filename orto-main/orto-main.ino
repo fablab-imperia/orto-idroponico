@@ -70,11 +70,6 @@ Task displayDataTask(TIME_BETWEEN_DISPLAY_VALUES_MS, TASK_FOREVER, displaySensor
 void readSensors();
 Task sensorReadTask(TIME_BETWEEN_SENSORS_READ_MS, TASK_FOREVER, readSensors);
 
-void waterPumpOn();
-void waterPumpOff();
-Task waterPumpOnTask(TIME_BETWEEN_WATER_PUMP_ACTIVATION_MS, TASK_ONCE, waterPumpOn);
-Task waterPumpOffTask(TIME_BETWEEN_WATER_PUMP_ACTIVATION_MS, TASK_ONCE, waterPumpOff);
-
 void acidPumpOn();
 void acidPumpOff();
 Task acidPumpOnTask(TASK_IMMEDIATE, TASK_ONCE, acidPumpOn);
@@ -87,8 +82,7 @@ Task fertilizerPumpOffTask(TASK_IMMEDIATE, TASK_ONCE, fertilizerPumpOff);
 
 void waterMixingOn();
 void waterMixingOff();
-Task waterMixingOnTask(TASK_IMMEDIATE, TASK_ONCE, waterMixingOn);
-Task waterMixingOffTask(TASK_IMMEDIATE, TASK_ONCE, waterMixingOff);
+
 
 
 void convertMillisToTimeString(char* timeString, int timeStringSize, long millis) {
@@ -160,25 +154,20 @@ void setup() {
   // Stops all pumps at beginning
   acidPump.turnOff();
   fertilizerPump.turnOff();
-  waterPump.turnOff();
+  waterPump.turnOn();
 
   //Initialize tasks
   taskManager.init();
   taskManager.addTask(displayDataTask);
   taskManager.addTask(sensorReadTask);
-  taskManager.addTask(waterPumpOnTask);
-  taskManager.addTask(waterPumpOffTask);
-  //taskManager.addTask(acidPumpOnTask);
-  //taskManager.addTask(acidPumpOffTask);
+  taskManager.addTask(acidPumpOnTask);
+  taskManager.addTask(acidPumpOffTask);
   taskManager.addTask(fertilizerPumpOnTask);
   taskManager.addTask(fertilizerPumpOffTask);
-  taskManager.addTask(waterMixingOffTask);
-  taskManager.addTask(waterMixingOnTask);
 
   //Enable tasks 
   displayDataTask.enable();
   sensorReadTask.enable();
-  waterPumpOnTask.enable();
 
 }
 
@@ -186,40 +175,8 @@ void loop() {
   taskManager.execute();
 } 
 
-void waterPumpOn() {
 
-  const ControllerState currentState = ctrl.getState();
 
-  if (currentState == ControllerState::IDLE) 
-  {
-    ctrl.setState(ControllerState::WATER_CIRCULATING);
-    waterPump.turnOn();
-    char timeString[20];
-    lastswitch=millis();
-    convertMillisToTimeString(timeString,20,lastswitch);
-    Serial.print("---------WATER PUMP STARTS at ");
-    Serial.println(timeString);
-    waterPumpOffTask.set(TIME_WATER_PUMP_ON_MS, TASK_ONCE, waterPumpOff);
-    waterPumpOffTask.enableDelayed();
-  } else {
-    char stateString[20];
-    convertCurrentStateToString(stateString,20);
-    Serial.print("SKIPPING WATER PUMP START BECAUSE STATE IS ");
-    Serial.println(stateString);
-  }
-}
-
-void waterPumpOff() {
-  ctrl.setState(ControllerState::IDLE);
-  waterPump.turnOff();
-  char timeString[20];
-  lastswitch=millis();
-  convertMillisToTimeString(timeString,20,lastswitch);
-  Serial.print("---------WATER PUMP STOPS at ");
-  Serial.println(timeString);
-  waterPumpOnTask.set(TIME_BETWEEN_WATER_PUMP_ACTIVATION_MS, TASK_ONCE, waterPumpOn);
-  waterPumpOnTask.enableDelayed();
-}
 
 void acidPumpOn() {
   const ControllerState currentState = ctrl.getState();
@@ -251,9 +208,6 @@ void acidPumpOff() {
   convertMillisToTimeString(timeString,20,lastswitch);
   Serial.print("---------ACID PUMP STOPS at ");
   Serial.println(timeString);
-  
-  waterMixingOnTask.set(TASK_IMMEDIATE, TASK_ONCE, waterMixingOn);
-  waterMixingOnTask.enableDelayed();
    
 }
 
@@ -282,14 +236,6 @@ void fertilizerPumpOn() {
 
 void fertilizerPumpOff() {
   fertilizerPump.turnOff();
-  char timeString[20];
-  lastswitch=millis();
-  convertMillisToTimeString(timeString,20,lastswitch);
-  Serial.print("---------FERTILIZER PUMP STOPS at ");
-  Serial.println(timeString);
-
-  waterMixingOnTask.set(TASK_IMMEDIATE, TASK_ONCE, waterMixingOn);
-  waterMixingOnTask.enableDelayed();
    
 }
 
@@ -304,13 +250,7 @@ void waterMixingOn() {
     Serial.println(stateString);
     ctrl.setState(ControllerState::WATER_MIXING);
     waterPump.turnOn();
-    char timeString[20];
-    lastswitch=millis();
-    convertMillisToTimeString(timeString,20,lastswitch);
- 
-    Serial.println(timeString);
-    waterMixingOffTask.set(TIME_MIXING_PUMP_ON_MS, TASK_ONCE, waterMixingOff);
-    waterMixingOffTask.enableDelayed();
+
   } else {
     char stateString[20];
     convertCurrentStateToString(stateString,20);
@@ -323,11 +263,6 @@ void waterMixingOn() {
 void waterMixingOff(){
   ctrl.setState(ControllerState::IDLE);
   waterPump.turnOff();
-  char timeString[20];
-  lastswitch=millis();
-  convertMillisToTimeString(timeString,20,lastswitch);
-  Serial.print("---------WATER MIXING STOPS at ");
-  Serial.println(timeString);
 }
 
 
@@ -338,23 +273,21 @@ void readSensors() {
   temperatureSensor.requestTemperatures(); 
   temperatureC = temperatureSensor.getTempCByIndex(0);
 
-  Serial.print("TEMPERATURE IS: ");
-  Serial.println(temperatureC);
 
   const ControllerState currentState = ctrl.getState();
   // acid pump tasks are both disabled and ph values are out of range
- /* if (currentState == ControllerState::IDLE
+  if (currentState == ControllerState::IDLE
       &&
-      (phValues.value - THRESHOLD_VALUE_PH) > THRESHOLD_TOLERANCE_PH)
+      (phValues.value > THRESHOLD_VALUE_PH))
       {
           Serial.println("---------PH LEVEL OVER THRESHOLD: NEED TO START ACID PUMP");
           acidPumpOnTask.set(TASK_IMMEDIATE, TASK_ONCE, acidPumpOn);
           acidPumpOnTask.enableDelayed();
       } 
-*/
+
   if ( currentState == ControllerState::IDLE  
        &&
-      (THRESHOLD_VALUE_CONDUCTIVITY - condValues.value) > THRESHOLD_TOLERANCE_CONDUCTIVITY)
+      (THRESHOLD_VALUE_CONDUCTIVITY > condValues.value))
       {
           Serial.println("---------CONDUCTIVITY BELOW THRESHOLD: NEED TO START FERTIZILER PUMP");
           fertilizerPumpOnTask.set(TASK_IMMEDIATE, TASK_ONCE, fertilizerPumpOn);
