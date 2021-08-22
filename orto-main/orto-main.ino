@@ -21,12 +21,7 @@
 
 
 
-/************************************************************
- * Global variables
- ***********************************************************/
-AnalogValues phValues;
-AnalogValues condValues;
-double temperatureC = 0.0;
+
 
 
 /*************************************************************
@@ -64,25 +59,21 @@ Scheduler taskManager;
 //TIMER
 unsigned long lastswitch=0;
 
-void displaySensorValue();
-Task displayDataTask(TIME_BETWEEN_DISPLAY_VALUES_MS, TASK_FOREVER, displaySensorValue);
+//Timer for updating sensor values shown to users (display, webn, etc)
+void readAndShowSensorValues();
+Task readAndShowSensorValuesTask(TIME_BETWEEN_DISPLAY_VALUES * TASK_MILLISECOND, TASK_FOREVER, readAndShowSensorValues);
 
-void readSensors();
-Task sensorReadTask(TIME_BETWEEN_SENSORS_READ_MS, TASK_FOREVER, readSensors);
+//Timer for reading sensors and starting both pumps if it is the case
+void readSensorsAndStartPumps();
+Task readSensorsAndStartPumpsTask(TIME_BETWEEN_SENSOR_READS * TASK_MILLISECOND, TASK_FOREVER, readSensorsAndStartPumps);
 
-void acidPumpOn();
+//Task for stopping acid pump
 void acidPumpOff();
-Task acidPumpOnTask(TASK_IMMEDIATE, TASK_ONCE, acidPumpOn);
-Task acidPumpOffTask(TASK_IMMEDIATE, TASK_ONCE, acidPumpOff);
+Task acidPumpOffTask(TIME_PERISTALTIC_PUMP_ACID_ON * TASK_MILLISECOND, TASK_ONCE, acidPumpOff);
 
-void fertilizerPumpOn();
+//Task for stopping fertilizer pump
 void fertilizerPumpOff();
-Task fertilizerPumpOnTask(TASK_IMMEDIATE, TASK_ONCE, fertilizerPumpOn);
-Task fertilizerPumpOffTask(TASK_IMMEDIATE, TASK_ONCE, fertilizerPumpOff);
-
-void waterMixingOn();
-void waterMixingOff();
-
+Task fertilizerPumpOffTask(TIME_PERISTALTIC_PUMP_FERTILIZER_ON * TASK_MILLISECOND, TASK_ONCE, fertilizerPumpOff);
 
 
 void convertMillisToTimeString(char* timeString, int timeStringSize, long millis) {
@@ -154,20 +145,21 @@ void setup() {
   // Stops all pumps at beginning
   acidPump.turnOff();
   fertilizerPump.turnOff();
+  waterPump.turnOff();
+
+  // Water pump always ON to simplify mixing
   waterPump.turnOn();
 
   //Initialize tasks
   taskManager.init();
-  taskManager.addTask(displayDataTask);
-  taskManager.addTask(sensorReadTask);
-  taskManager.addTask(acidPumpOnTask);
+  taskManager.addTask(readAndShowSensorValuesTask);
+  taskManager.addTask(readSensorsAndStartPumpsTask);
   taskManager.addTask(acidPumpOffTask);
-  taskManager.addTask(fertilizerPumpOnTask);
   taskManager.addTask(fertilizerPumpOffTask);
 
-  //Enable tasks 
-  displayDataTask.enable();
-  sensorReadTask.enable();
+  //Enable all tasks (show values and sensor reads) 
+  readAndShowSensorValuesTask.enable();
+  readSensorsAndStartPumpsTask.enable();
 
 }
 
@@ -176,31 +168,6 @@ void loop() {
 } 
 
 
-
-
-void acidPumpOn() {
-  const ControllerState currentState = ctrl.getState();
-  
-  if ( currentState == ControllerState::IDLE ||
-      currentState ==  ControllerState::WATER_CIRCULATING) 
-  {
-    acidPump.turnOn();
-    char timeString[20];
-    lastswitch=millis();
-    convertMillisToTimeString(timeString,20,lastswitch);
-    Serial.print("---------ACID PUMP STARTS at ");
-    Serial.println(timeString);
-    acidPumpOffTask.set(TIME_PERISTALTIC_PUMP_ACID_ON_MS, TASK_ONCE, acidPumpOff);
-    acidPumpOffTask.enableDelayed();
-  } else {
-    char stateString[20];
-    convertCurrentStateToString(stateString,20);
-    Serial.print("SKIPPING ACID PUMP START BECAUSE STATE IS ");
-    Serial.println(stateString);
-
-  }
-}
-
 void acidPumpOff() {
   acidPump.turnOff();
   char timeString[20];
@@ -208,102 +175,91 @@ void acidPumpOff() {
   convertMillisToTimeString(timeString,20,lastswitch);
   Serial.print("---------ACID PUMP STOPS at ");
   Serial.println(timeString);
-   
 }
 
-void fertilizerPumpOn() {
-  const ControllerState currentState = ctrl.getState();
-  
-  if (currentState == ControllerState::IDLE ||
-      currentState == ControllerState::WATER_CIRCULATING)
-  {
-    fertilizerPump.turnOn();
-    char timeString[20];
-    lastswitch=millis();
-    convertMillisToTimeString(timeString,20,lastswitch);
-    Serial.print("---------FERTILIZER PUMP STARTS at ");
-    Serial.println(timeString);
-    fertilizerPumpOffTask.set(TIME_PERISTALTIC_PUMP_FERTILIZER_ON_MS, TASK_ONCE, fertilizerPumpOff);
-    fertilizerPumpOffTask.enableDelayed();
-  } else {
-    char stateString[20];
-    convertCurrentStateToString(stateString,20);
-    Serial.print("SKIPPING FERTILIZER PUMP START BECAUSE STATE IS ");
-    Serial.println(stateString);
 
-  }
-}
 
 void fertilizerPumpOff() {
   fertilizerPump.turnOff();
-   
+  char timeString[20];
+  lastswitch=millis();
+  convertMillisToTimeString(timeString,20,lastswitch);
+  Serial.print("---------FERTILIZER PUMP STOPS at ");
+  Serial.println(timeString);
 }
 
-void waterMixingOn() {
-  const ControllerState currentState = ctrl.getState();
-  if (currentState != ControllerState::WATER_CIRCULATING && currentState != ControllerState::WATER_MIXING) 
-  {
-    char stateString[20];
-    convertCurrentStateToString(stateString,20);
-    Serial.print("---------WATER MIXING STARTS at ");
-    Serial.print("PREVIOUS STATE IS ");
-    Serial.println(stateString);
-    ctrl.setState(ControllerState::WATER_MIXING);
-    waterPump.turnOn();
+void readSensorsAndStartPumps() {
 
-  } else {
-    char stateString[20];
-    convertCurrentStateToString(stateString,20);
-    Serial.print("SKIPPING WATER MIXING BECAUSE STATE IS ");
-    Serial.println(stateString);
+  AnalogValues phValues;
+  AnalogValues condValues;
+  double temperatureC;
 
-  }
-}
-
-void waterMixingOff(){
-  ctrl.setState(ControllerState::IDLE);
-  waterPump.turnOff();
-}
-
-
-
-void readSensors() {
   phValues = phProbe.getAverageValue();
   condValues = conductivityProbe.getAverageValue();
   temperatureSensor.requestTemperatures(); 
   temperatureC = temperatureSensor.getTempCByIndex(0);
 
+  char timeString[20];
+  lastswitch=millis();
+  convertMillisToTimeString(timeString,20,lastswitch);
 
-  const ControllerState currentState = ctrl.getState();
-  // acid pump tasks are both disabled and ph values are out of range
-  if (currentState == ControllerState::IDLE
-      &&
-      (phValues.value > THRESHOLD_VALUE_PH))
-      {
-          Serial.println("---------PH LEVEL OVER THRESHOLD: NEED TO START ACID PUMP");
-          acidPumpOnTask.set(TASK_IMMEDIATE, TASK_ONCE, acidPumpOn);
-          acidPumpOnTask.enableDelayed();
-      } 
+  // If PH value is found above threshold
+  if (phValues.value > THRESHOLD_VALUE_PH)
+  {
+      Serial.println("---------PH LEVEL OVER THRESHOLD: NEED TO START ACID PUMP");
+      //start acid pump
+      acidPump.turnOn();
+      Serial.print("---------ACID PUMP STARTS at ");
+      Serial.println(timeString);
+      //schedule a task for stopping the pump after specific number of seconds
+      acidPumpOffTask.set(TIME_PERISTALTIC_PUMP_ACID_ON * TASK_MILLISECOND, TASK_ONCE, acidPumpOff);
+      acidPumpOffTask.enableDelayed();
+  } 
+  else 
+  {
+    Serial.print("PH IS ");
+    Serial.println(phValues.value);
+    Serial.print("THRESHOLD IS ");
+    Serial.println(THRESHOLD_VALUE_PH);
+    Serial.print("NO NEED TO ACTIVATE PUMP AT ");
+    Serial.println(timeString);
+  }
 
-  if ( currentState == ControllerState::IDLE  
-       &&
-      (THRESHOLD_VALUE_CONDUCTIVITY > condValues.value))
-      {
-          Serial.println("---------CONDUCTIVITY BELOW THRESHOLD: NEED TO START FERTIZILER PUMP");
-          fertilizerPumpOnTask.set(TASK_IMMEDIATE, TASK_ONCE, fertilizerPumpOn);
-          fertilizerPumpOnTask.enableDelayed();
-      } 
+
+  // If PH value is found above threshold
+  if (condValues.value < THRESHOLD_VALUE_CONDUCTIVITY)
+  {
+      Serial.println("---------CONDUCTIVITY LEVEL UNDER THRESHOLD: NEED TO START FERTILIZER PUMP");
+      //start fertilizer pump
+      fertilizerPump.turnOn();
+      Serial.print("---------FERTILIZER PUMP STARTS at ");
+      Serial.println(timeString);
+      //schedule a task for stopping the pump after specific number of seconds
+      fertilizerPumpOffTask.set(TIME_PERISTALTIC_PUMP_FERTILIZER_ON * TASK_MILLISECOND, TASK_ONCE, fertilizerPumpOff);
+      fertilizerPumpOffTask.enableDelayed();
+  }  
+  else 
+  {
+    Serial.print("CONDUCTIVITY IS ");
+    Serial.println(condValues.value);
+    Serial.print("THRESHOLD IS ");
+    Serial.println(THRESHOLD_VALUE_CONDUCTIVITY);
+    Serial.print("NO NEED TO ACTIVATE PUMP AT ");
+    Serial.println(timeString);
+  }
+
 }
 
-void displaySensorValue() {
+void readAndShowSensorValues() {
 
-/*  
-  Serial.print("PH VALUE: ");
-  Serial.println(phValues.value);
-  
-  Serial.print("COND VALUE: ");
-  Serial.println(condValues.value);
-  */
+  AnalogValues phValues;
+  AnalogValues condValues;
+  double temperatureC = 0.0;
+
+  phValues = phProbe.getAverageValue();
+  condValues = conductivityProbe.getAverageValue();
+  temperatureSensor.requestTemperatures(); 
+  temperatureC = temperatureSensor.getTempCByIndex(0);
   
   //clear display
   lcd.clear();

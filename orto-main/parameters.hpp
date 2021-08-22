@@ -6,23 +6,21 @@
 #define LCD_COLS 20
 
 
-#define TIME_WATER_PUMP_ON_MS 20*1000L
-#define TIME_BETWEEN_WATER_PUMP_ACTIVATION_MS 60*1000L
+//Time the acid pump remains ON acter activation in ms
+#define TIME_PERISTALTIC_PUMP_ACID_ON 1*1000L
+//Time the fertilizer pump remains ON after activation in ms
+#define TIME_PERISTALTIC_PUMP_FERTILIZER_ON 1*1000L
+//Time between two consecutives sensor reads. If the value is below/up the the threshold the pump is acivated (acid or fertlizer)
+#define TIME_BETWEEN_SENSOR_READS 60*1000L
 
-#define TIME_MIXING_PUMP_ON_MS 60*1000L
+// Update time of sensors shown in display
+#define TIME_BETWEEN_DISPLAY_VALUES 1000 
 
-#define TIME_PERISTALTIC_PUMP_ACID_ON_MS 1*1000L
-#define TIME_PERISTALTIC_PUMP_FERTILIZER_ON_MS 1*1000L
-
-
-#define TIME_BETWEEN_SENSORS_READ_MS 3000 
-#define TIME_BETWEEN_DISPLAY_VALUES_MS 1000 
-
-
-#define THRESHOLD_VALUE_PH 5
-#define THRESHOLD_TOLERANCE_PH 0.1
+//PH Threshold vale (if sensor value is higher, acid pump turns ON)
+#define THRESHOLD_VALUE_PH 6
+//PH Threshold vale (if  value is higher, acid pump turns ON)
 #define THRESHOLD_VALUE_CONDUCTIVITY 900
-#define THRESHOLD_TOLERANCE_CONDUCTIVITY 50
+
 
 
 
