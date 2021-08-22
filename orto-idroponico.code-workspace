@@ -4,8 +4,7 @@
 			"path": "orto-controller"
 		},
 		{
-			"name": "orto-web",
-			"path": "orto-web/orto-web"
+			"path": "orto-web"
 		}
 	],
 	"settings": {}

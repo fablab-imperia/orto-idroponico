@@ -1,61 +1,62 @@
+//
+// !!! WARNING !!! AUTO-GENERATED FILE!
+// PLEASE DO NOT MODIFY IT AND USE "platformio.ini":
+// https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags
+//
 {
     "configurations": [
         {
-            "name": "!!! WARNING !!! AUTO-GENERATED FILE, PLEASE DO NOT MODIFY IT AND USE https://docs.platformio.org/page/projectconf/section_env_build.html#build-flags"
-        },
-        {
-            "name": "Win32",
+            "name": "PlatformIO",
             "includePath": [
-                "c:/Github/orto-idroponico/orto-controller/include",
-                "c:/Github/orto-idroponico/orto-controller",
-                "c:/Github/orto-idroponico/orto-controller/.pio/libdeps/uno/TaskScheduler/src",
-                "c:/Github/orto-idroponico/orto-controller/.pio/libdeps/uno/LiquidCrystal_I2C",
-                "C:/Users/vapax/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/Wire/src",
-                "c:/Github/orto-idroponico/orto-controller/.pio/libdeps/uno/DallasTemperature",
-                "c:/Github/orto-idroponico/orto-controller/.pio/libdeps/uno/OneWire",
-                "C:/Users/vapax/.platformio/packages/framework-arduinoavr/cores/arduino",
-                "C:/Users/vapax/.platformio/packages/framework-arduinoavr/variants/standard",
-                "C:/Users/vapax/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/EEPROM/src",
-                "C:/Users/vapax/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/HID/src",
-                "C:/Users/vapax/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/SPI/src",
-                "C:/Users/vapax/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/SoftwareSerial/src",
-                "C:/Users/vapax/.platformio/packages/tool-unity",
+                "c:/Users/fablab/github/orto-idroponico/orto-controller/include",
+                "c:/Users/fablab/github/orto-idroponico/orto-controller",
+                "c:/Users/fablab/github/orto-idroponico/orto-controller/.pio/libdeps/uno/TaskScheduler/src",
+                "c:/Users/fablab/github/orto-idroponico/orto-controller/.pio/libdeps/uno/LiquidCrystal_I2C",
+                "C:/Users/fablab/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                "c:/Users/fablab/github/orto-idroponico/orto-controller/.pio/libdeps/uno/DallasTemperature",
+                "c:/Users/fablab/github/orto-idroponico/orto-controller/.pio/libdeps/uno/OneWire",
+                "C:/Users/fablab/.platformio/packages/framework-arduino-avr/cores/arduino",
+                "C:/Users/fablab/.platformio/packages/framework-arduino-avr/variants/standard",
+                "C:/Users/fablab/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                "C:/Users/fablab/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                "C:/Users/fablab/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                "C:/Users/fablab/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                "C:/Users/fablab/.platformio/packages/tool-unity",
                 ""
             ],
             "browse": {
                 "limitSymbolsToIncludedHeaders": true,
                 "path": [
-                    "c:/Github/orto-idroponico/orto-controller/include",
-                    "c:/Github/orto-idroponico/orto-controller",
-                    "c:/Github/orto-idroponico/orto-controller/.pio/libdeps/uno/TaskScheduler/src",
-                    "c:/Github/orto-idroponico/orto-controller/.pio/libdeps/uno/LiquidCrystal_I2C",
-                    "C:/Users/vapax/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/Wire/src",
-                    "c:/Github/orto-idroponico/orto-controller/.pio/libdeps/uno/DallasTemperature",
-                    "c:/Github/orto-idroponico/orto-controller/.pio/libdeps/uno/OneWire",
-                    "C:/Users/vapax/.platformio/packages/framework-arduinoavr/cores/arduino",
-                    "C:/Users/vapax/.platformio/packages/framework-arduinoavr/variants/standard",
-                    "C:/Users/vapax/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/EEPROM/src",
-                    "C:/Users/vapax/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/HID/src",
-                    "C:/Users/vapax/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/SPI/src",
-                    "C:/Users/vapax/.platformio/packages/framework-arduinoavr/libraries/__cores__/arduino/SoftwareSerial/src",
-                    "C:/Users/vapax/.platformio/packages/tool-unity",
+                    "c:/Users/fablab/github/orto-idroponico/orto-controller/include",
+                    "c:/Users/fablab/github/orto-idroponico/orto-controller",
+                    "c:/Users/fablab/github/orto-idroponico/orto-controller/.pio/libdeps/uno/TaskScheduler/src",
+                    "c:/Users/fablab/github/orto-idroponico/orto-controller/.pio/libdeps/uno/LiquidCrystal_I2C",
+                    "C:/Users/fablab/.platformio/packages/framework-arduino-avr/libraries/Wire/src",
+                    "c:/Users/fablab/github/orto-idroponico/orto-controller/.pio/libdeps/uno/DallasTemperature",
+                    "c:/Users/fablab/github/orto-idroponico/orto-controller/.pio/libdeps/uno/OneWire",
+                    "C:/Users/fablab/.platformio/packages/framework-arduino-avr/cores/arduino",
+                    "C:/Users/fablab/.platformio/packages/framework-arduino-avr/variants/standard",
+                    "C:/Users/fablab/.platformio/packages/framework-arduino-avr/libraries/EEPROM/src",
+                    "C:/Users/fablab/.platformio/packages/framework-arduino-avr/libraries/HID/src",
+                    "C:/Users/fablab/.platformio/packages/framework-arduino-avr/libraries/SPI/src",
+                    "C:/Users/fablab/.platformio/packages/framework-arduino-avr/libraries/SoftwareSerial/src",
+                    "C:/Users/fablab/.platformio/packages/tool-unity",
                     ""
                 ]
             },
             "defines": [
-                "PLATFORMIO=50003",
+                "PLATFORMIO=50101",
                 "ARDUINO_AVR_UNO",
                 "ARDUINO_UNO",
                 "F_CPU=16000000L",
                 "ARDUINO_ARCH_AVR",
-                "ARDUINO=10805",
+                "ARDUINO=10808",
                 "__AVR_ATmega328P__",
                 ""
             ],
-            "intelliSenseMode": "gcc-x64",
             "cStandard": "c11",
             "cppStandard": "c++11",
-            "compilerPath": "C:/Users/vapax/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
+            "compilerPath": "C:/Users/fablab/.platformio/packages/toolchain-atmelavr/bin/avr-gcc.exe",
             "compilerArgs": [
                 "-mmcu=atmega328p",
                 ""

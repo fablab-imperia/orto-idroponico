@@ -1,11 +1,24 @@
 # Task Scheduler
 ### Cooperative multitasking for Arduino, ESPx, STM32 and other microcontrollers
-#### Version 3.2.0: 2020-08-16 [Latest updates](https://github.com/arkhipenko/TaskScheduler/wiki/Latest-Updates)
+#### Version 3.3.0: 2021-05-12 [Latest updates](https://github.com/arkhipenko/TaskScheduler/wiki/Latest-Updates)
 
 [![arduino-library-badge](https://www.ardu-badge.com/badge/TaskScheduler.svg?)](https://www.ardu-badge.com/TaskScheduler)[![xscode](https://img.shields.io/badge/Available%20on-xs%3Acode-blue?style=?style=plastic&logo=appveyor&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAMAAACdt4HsAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAAZQTFRF////////VXz1bAAAAAJ0Uk5T/wDltzBKAAAAlUlEQVR42uzXSwqAMAwE0Mn9L+3Ggtgkk35QwcnSJo9S+yGwM9DCooCbgn4YrJ4CIPUcQF7/XSBbx2TEz4sAZ2q1RAECBAiYBlCtvwN+KiYAlG7UDGj59MViT9hOwEqAhYCtAsUZvL6I6W8c2wcbd+LIWSCHSTeSAAECngN4xxIDSK9f4B9t377Wd7H5Nt7/Xz8eAgwAvesLRjYYPuUAAAAASUVORK5CYII=)](https://xscode.com/arkhipenko/TaskScheduler)
 
+#### Get expedited support or integration consultation for TaskScheduler [from xs:code](https://xscode.com/arkhipenko/TaskScheduler)
+
+[![xscode](https://github.com/arkhipenko/resources/blob/master/taskscheduler-banner.png)](https://xscode.com/arkhipenko/TaskScheduler)
+---
+
 ### OVERVIEW:
-A lightweight implementation of cooperative multitasking (task scheduling) supporting:
+A lightweight implementation of cooperative multitasking (task scheduling). An easier alternative to preemptive programming and frameworks like FreeRTOS. 
+
+**Why cooperative?**
+
+You mostly do not need to worry about pitfalls of concurrent processing (races, deadlocks, livelocks, resource sharing, etc.).  The fact of cooperative processing takes care of such issues by design. 
+
+_“Everybody who learns concurrency and thinks they understand it, ends up finding mysterious races they thought weren’t possible, and discovers that they didn’t actually understand it yet after all.”_ **Herb Sutter, chair of the ISO C++ standards committee, Microsoft.**
+
+**Main features:**
 1. Periodic task execution, with dynamic execution period in `milliseconds` (default) or `microseconds` (if explicitly enabled) – frequency of execution
 2. Number of iterations (limited or infinite number of iterations)
 3. Execution of tasks in predefined sequence
@@ -15,7 +28,7 @@ A lightweight implementation of cooperative multitasking (task scheduling) suppo
 7. Support for task IDs and Control Points for error handling and watchdog timer
 8. Support for Local Task Storage pointer (allowing use of same callback code for multiple tasks)
 9. Support for layered task prioritization
-10. Support for `std::functions` (tested on `ESPx` only)
+10. Support for `std::functions` (tested on `ESPx` and `STM32` only)
 11. Overall task timeout
 12. Static and dynamic callback method binding
 13. CPU load / idle statistics for time critical applications
@@ -33,6 +46,7 @@ Scheduling overhead: between `15` and `18` microseconds per scheduling pass (Ard
 * Teensy (tested on Teensy 3.5)
 * STM32F1 (tested on Mini USB STM32F103RCBT6 ARM Cortex-M3 leaflabs Leaf maple mini module F)
 * MSP430 and MSP432 boards
+* Raspberry Pi (requires external `Arduino.h` and `millis()` implementation)
 
 
 
