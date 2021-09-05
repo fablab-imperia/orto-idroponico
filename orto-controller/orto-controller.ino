@@ -10,6 +10,10 @@
 
 #include <TaskScheduler.h>
 
+//Serial communication and JSON library
+#include <SoftwareSerial.h>
+#include <ArduinoJson.h>
+
 //Includes for our own pin definitions and setups
 #include "pinouts.hpp"
 #include "parameters.hpp"
@@ -75,6 +79,11 @@ Task acidPumpOffTask(TIME_PERISTALTIC_PUMP_ACID_ON * TASK_MILLISECOND, TASK_ONCE
 void fertilizerPumpOff();
 Task fertilizerPumpOffTask(TIME_PERISTALTIC_PUMP_FERTILIZER_ON * TASK_MILLISECOND, TASK_ONCE, fertilizerPumpOff);
 
+// Serial connection with ESP32
+SoftwareSerial ESP32_serial(PIN_SERIAL_RX, PIN_SERIAL_TX); // RX, TX
+
+// JSON buffer
+StaticJsonDocument<200> doc;
 
 void convertMillisToTimeString(char* timeString, int timeStringSize, long millis) {
   long total = millis / 1000;
@@ -125,6 +134,10 @@ void setup() {
   Serial.println("Starting...");
   Banner::printSerial();
 
+  ESP32_serial.begin(ESP32_BAUD_RATE);
+  
+  
+
   //XYPair phCalibrationPoints[] = { {1.80f, 6.88f}, {1.46f, 4.00f,}, {2.13f, 9.23f}};//stefano
   XYPair phCalibrationPoints[] = {{1.51f, 4.01f,}, {1.86f, 7.00f}, {2.08f, 8.80f}, {2.23f, 10.01f,}};//Vale
   //LineFit phBestFit = Calibrator::findBestFit(phCalibrationPoints, 3);//Stefano
@@ -160,6 +173,8 @@ void setup() {
   //Enable all tasks (show values and sensor reads) 
   readAndShowSensorValuesTask.enable();
   readSensorsAndStartPumpsTask.enable();
+
+
 
 }
 
@@ -293,5 +308,10 @@ void readAndShowSensorValues() {
   snprintf(messageBuffer ,20,"%s - %sm fa", timeString, lastimeString);
   lcd.print (messageBuffer);
 
+//  JsonObject json = jsonBuffer.to<JsonObject>();
+  doc["temp"] = temperatureC;
+  doc["ph"] = phValues.value;
+  doc["cond"] = condValues.value;
+  
+  serializeJson(doc, ESP32_serial);
 }
-
