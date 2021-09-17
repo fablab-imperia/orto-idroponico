@@ -1,5 +1,5 @@
 # Orto idroponico
-> Sistema di controllo per coltivazione idroponica che consente circolazione dell'acqua e paziale correzione dei valori di PH e conducibilità della stessa. 
+> Sistema di controllo per coltivazione idroponica che consente circolazione dell'acqua e parziale correzione dei valori di PH e conducibilità della stessa. 
 
 *Read this in other languages: [English](README.EN.md).*
 
@@ -12,7 +12,7 @@
 
 - [Arduino IDE](#arduino-ide)
 - [Visual Studio Code e PlatformIO](#visual-studio-code-e-platformio)
-- [Licenza](#licenza)
+- [Licenza](https://github.com/fablab-imperia/orto-idroponico/blob/main/LICENSE)
 
 ## Arduino IDE
 
