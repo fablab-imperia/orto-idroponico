@@ -272,14 +272,26 @@ void readAndShowSensorValues() {
   condValues = conductivityProbe.getAverageValue();
   temperatureSensor.requestTemperatures(); 
   temperatureC = temperatureSensor.getTempCByIndex(0);
-  
-  //clear display
-  //lcd.clear();
-  lcd.setCursor(0,0); // Set cursor to starting position instead of clear() to reduce flickering
+
+
   //buffer for output
   char messageBuffer[20];
   //buffer for doubles that must be converted to strings
   char valueBuffer[10];
+
+  
+  lcd.setCursor(0,3);         // Overwrite last line
+  char timeString[20];
+  char lastimeString[20];
+  convertMillisToTimeString(timeString,20,millis());
+  convertMillisToShortTimeString(lastimeString,20,millis()-lastswitch);
+  snprintf(messageBuffer ,20,"%s - %sm fa", timeString, lastimeString);
+  lcd.print (messageBuffer);
+  lcd.print("    ");          // Clear next cells
+  
+  //clear display
+  //lcd.clear();
+  lcd.setCursor(0,0); // Set cursor to starting position instead of clear() to reduce flickering
 
   //dtostrf(phValues.voltage, 3, 1, voltageBuffer);
   dtostrf(phValues.value, 4, 1, valueBuffer);
@@ -303,14 +315,7 @@ void readAndShowSensorValues() {
   lcd.print(messageBuffer); 
 
   lcd.print("    ");          // Clear next cells
-  lcd.setCursor(0,3);
-  char timeString[20];
-  char lastimeString[20];
-  convertMillisToTimeString(timeString,20,millis());
-  convertMillisToShortTimeString(lastimeString,20,millis()-lastswitch);
-  snprintf(messageBuffer ,20,"%s - %sm fa", timeString, lastimeString);
-  lcd.print (messageBuffer);
-  lcd.print("    ");          // Clear next cells
+
 
 //  JsonObject json = jsonBuffer.to<JsonObject>();
   doc["temp"] = temperatureC;
