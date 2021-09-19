@@ -274,7 +274,8 @@ void readAndShowSensorValues() {
   temperatureC = temperatureSensor.getTempCByIndex(0);
   
   //clear display
-  lcd.clear();
+  //lcd.clear();
+  lcd.setCursor(0,0); // Set cursor to starting position instead of clear() to reduce flickering
   //buffer for output
   char messageBuffer[20];
   //buffer for doubles that must be converted to strings
@@ -282,7 +283,7 @@ void readAndShowSensorValues() {
 
   //dtostrf(phValues.voltage, 3, 1, voltageBuffer);
   dtostrf(phValues.value, 4, 1, valueBuffer);
-  snprintf(messageBuffer,20,"PH :%s   ", valueBuffer);  // VPH:%s  , voltageBuffer
+  snprintf(messageBuffer,20,"pH :%s   ", valueBuffer);  // VPH:%s  , voltageBuffer
   //Serial.println(messageBuffer);
 
   lcd.print(messageBuffer);
@@ -293,6 +294,7 @@ void readAndShowSensorValues() {
   snprintf(messageBuffer,20,"CND:%s ", valueBuffer);  //VCD:%s  , voltageBuffer
   //Serial.println(messageBuffer);
   lcd.print(messageBuffer);
+  lcd.print("    ");          // Clear next cells
   lcd.setCursor(0,1);
 
   dtostrf(temperatureC, 5, 1, valueBuffer);
@@ -300,13 +302,15 @@ void readAndShowSensorValues() {
   //Serial.println(messageBuffer);
   lcd.print(messageBuffer); 
 
-  lcd.setCursor(0,2);
+  lcd.print("    ");          // Clear next cells
+  lcd.setCursor(0,3);
   char timeString[20];
   char lastimeString[20];
   convertMillisToTimeString(timeString,20,millis());
   convertMillisToShortTimeString(lastimeString,20,millis()-lastswitch);
   snprintf(messageBuffer ,20,"%s - %sm fa", timeString, lastimeString);
   lcd.print (messageBuffer);
+  lcd.print("    ");          // Clear next cells
 
 //  JsonObject json = jsonBuffer.to<JsonObject>();
   doc["temp"] = temperatureC;

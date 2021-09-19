@@ -55,7 +55,7 @@ void initWebSocket() {
 void setup(){
   // Serial port for debugging purposes
   Serial.begin(115200);
-  Serial2.begin(115200);
+  Serial2.begin(115200);    // GPIO17 TX;    GPIO 16 RX
   
   WiFi.softAP(ORTO_WEB_SSID_BASENAME, ORTO_WEB_SSID_PASSWD);
 
