@@ -1,3 +1,20 @@
+/*
+This file is part of Orto idroponico Fablab Imperia
+
+Orto idroponico Fablab Imperia is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Nome-Programma is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Nome-Programma.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
 const temp_gauge = {x:200, y:300, r:160, width:40, angle_ref:Math.PI/6, background_color:'#ccc', min:0, max:40, fixed:1};
 const ph_gauge = {x:700, y:300, r:160, width:40, angle_ref:Math.PI/6, background_color:'#ccc', min:0, max:14, fixed:1};
 const cond_gauge = {x:1200, y:300, r:160, width:40, angle_ref:Math.PI/6, background_color:'#ccc', min:0, max:3000, fixed:0};
