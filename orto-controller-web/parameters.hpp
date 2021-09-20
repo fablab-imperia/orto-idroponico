@@ -26,6 +26,10 @@ along with Nome-Programma.  If not, see <http://www.gnu.org/licenses/>.
 #define LCD_ROWS 4
 #define LCD_COLS 20
 
+// Duration of one water pump cycle in seconds, set to 0 to keep the pump always on
+#define TIME_WATER_PUMP_CYCLE (0)                                               // Put brackets around expressions like (60*60) [1 hour] because of operator precedence
+// Time in seconds of water pump activity in a complete cycle (it's ignored if TIME_WATER_PUMP_CYCLE is zero)
+#define TIME_WATER_PUMP_ACTIVE 15                                               // Put brackets around expressions like (60*60) [1 hour] because of operator precedence
 
 //Time the acid pump remains ON acter activation in ms
 #define TIME_PERISTALTIC_PUMP_ACID_ON 1*1000L
@@ -43,7 +47,7 @@ along with Nome-Programma.  If not, see <http://www.gnu.org/licenses/>.
 #define THRESHOLD_VALUE_CONDUCTIVITY 900
 
 // After MANUAL_CONTROL_PUMP_TIMEOUT ms all pumps will be turned off (without any other command)
-#define MANUAL_CONTROL_PUMP_TIMEOUT 500
+#define MANUAL_CONTROL_PERISTALTIC_PUMP_TIMEOUT 800
 
 #define SERIAL_BAUDRATE 115200
 #define ADC_MAX_VALUES 4096

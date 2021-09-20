@@ -139,13 +139,25 @@ void loop() {
     readAndShowSensorValues();
   }
 
+
+
   if (manual_control) {
-    if (millis() - lastswitch > MANUAL_CONTROL_PUMP_TIMEOUT) {
+    if (millis() - lastswitch > MANUAL_CONTROL_PERISTALTIC_PUMP_TIMEOUT) {
       acidPump.turnOff();
       fertilizerPump.turnOff();
-      waterPump.turnOff();
     }
   } else {
-    
+    if (millis() - lastdisplay >= TIME_BETWEEN_SENSOR_READS) {
+      readSensorsAndStartPumps();
+    }
+    if (TIME_WATER_PUMP_CYCLE) {
+      if ((millis()/1000 % TIME_WATER_PUMP_CYCLE) < TIME_WATER_PUMP_ACTIVE) {
+        waterPump.turnOn();
+      } else {
+        waterPump.turnOff();
+      }
+    } else {
+      waterPump.turnOn();
+    }
   }
 }

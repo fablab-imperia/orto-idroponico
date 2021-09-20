@@ -17,7 +17,7 @@
 <div id="manual_control_div" style="opacity: 0; max-height: 0;">
   <button id="fertilizer" onmousedown="clicked('f')" ontouchstart="clicked('f')" onmouseup="released('f')" ontouchend="released('f')">Concime</button>
   <button id="acid" onmousedown="clicked('a')"  ontouchstart="clicked('a')" onmouseup="released('a')" ontouchend="released('a')">Acido</button>
-  <button id="pump" onmousedown="clicked('p')"  ontouchstart="clicked('p')" onmouseup="released('p')" ontouchend="released('p')">Pompa</button>
+  <button id="pump" onclick="toggle_pump()"><span id="water_pump_action_text">Attiva</span> Pompa</button>
 </div>
 
 

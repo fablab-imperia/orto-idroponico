@@ -65,30 +65,37 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
 
       if (payload == 'T') {
         manual_control = true;
-        // TODO
+        acidPump.turnOff();
+        fertilizerPump.turnOff();
+        waterPump.turnOff();
       } else if (payload == 'F') {
         manual_control = false;
-        // TODO
-      } else if (payload == 'F') {
-        fertilizerPump.turnOn();
-        manual_peristaltic_active = true;
-        lastswitch = millis();
-      } else if (payload == 'A') {
-        acidPump.turnOn();
-        manual_peristaltic_active = true;
-        lastswitch = millis();
-      } else if (payload == 'P') {
-        // TODO
-      } else if (payload == 'f') {
-        fertilizerPump.turnOff();
-        manual_peristaltic_active = false;
-        lastswitch = millis();
-      } else if (payload == 'a') {
         acidPump.turnOff();
-        manual_peristaltic_active = false;
-        lastswitch = millis();
-      } else if (payload == 'p') {
-        // TODO
+        fertilizerPump.turnOff();
+        waterPump.turnOff();
+      }
+      if (manual_control) {
+        if (payload == 'F') {
+          fertilizerPump.turnOn();
+          manual_peristaltic_active = true;
+          lastswitch = millis();
+        } else if (payload == 'A') {
+          acidPump.turnOn();
+          manual_peristaltic_active = true;
+          lastswitch = millis();
+        } else if (payload == 'P') {
+          waterPump.turnOn();
+        } else if (payload == 'f') {
+          fertilizerPump.turnOff();
+          manual_peristaltic_active = false;
+          lastswitch = millis();
+        } else if (payload == 'a') {
+          acidPump.turnOff();
+          manual_peristaltic_active = false;
+          lastswitch = millis();
+        } else if (payload == 'p') {
+          waterPump.turnOff();
+        }
       }
       break;
       /*    case WS_EVT_PONG:
