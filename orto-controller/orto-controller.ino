@@ -85,6 +85,10 @@ SoftwareSerial ESP32_serial(PIN_SERIAL_RX, PIN_SERIAL_TX); // RX, TX
 // JSON buffer
 StaticJsonDocument<200> doc;
 
+
+
+bool manual_control = false;      // State of current control type
+
 void convertMillisToTimeString(char* timeString, int timeStringSize, long millis) {
   long total = millis / 1000;
   int seconds = total % 60;
@@ -180,6 +184,24 @@ void setup() {
 
 void loop() {
   taskManager.execute();
+  String payload = "";
+  if (ESP32_serial.available()) {
+    char payload = ESP32_serial.read();
+    Serial.println(payload);
+    if (payload == 'T') {
+      manual_control = true;
+      // TODO
+    } else if (payload == 'F') {
+      manual_control = false;
+      // TODO
+    } else if (payload == 'f') {
+      // TODO
+    } else if (payload == 'a') {
+      // TODO
+    } else if (payload == 'p') {
+      // TODO
+    }
+  }
 } 
 
 

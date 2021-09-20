@@ -5,7 +5,7 @@
 #define LCD_ROWS 4
 #define LCD_COLS 20
 
-#define ESP32_BAUD_RATE 115200
+#define ESP32_BAUD_RATE 9600
 
 
 //Time the acid pump remains ON acter activation in ms

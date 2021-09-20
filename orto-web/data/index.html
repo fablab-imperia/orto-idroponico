@@ -3,6 +3,7 @@
   <title>ESP Web Server</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" href="data:,">
+  <link rel="stylesheet" type="text/css" href="style.css">
   <meta charset="utf-8"/>
 </head>
 <body>
@@ -12,6 +13,16 @@
   Your browser does not support the canvas element.
 </canvas>
 
+<button id="enable_pump_control" onclick="toggle_maual_control()">Abilita Controllo <span id="manual_automatic">Manuale</span></button>
+
+<div id="maual_control_div" style="visibility: hidden">
+  <button id="fertilizer" onmousedown="clicked('f')" onmouseup="released('f')">Concime</button>
+  <button id="acid" onmousedown="clicked('a')" onmouseup="released('a')">Acido</button>
+  <button id="pump" onmousedown="clicked('p')" onmouseup="released('p')">Pompa</button>
+</div>
+
 <script src="main.js"></script>
+<script src="manual_control.js"></script>
+
 </body>
 </html>

@@ -44,8 +44,7 @@ void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
   }
 }
 
-void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type,
-             void *arg, uint8_t *data, size_t len) {
+void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
   switch (type) {
     case WS_EVT_CONNECT:
       Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
@@ -54,11 +53,15 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
       Serial.printf("WebSocket client #%u disconnected\n", client->id());
       break;
     case WS_EVT_DATA:
-      handleWebSocketMessage(arg, data, len);
+      int i = 0;
+      char payload = *(data+i);
+      Serial.println(payload);
+      Serial2.print(payload);
       break;
-    case WS_EVT_PONG:
+/*    case WS_EVT_PONG:
     case WS_EVT_ERROR:
       break;
+*/
   }
 }
 
@@ -71,8 +74,8 @@ void initWebSocket() {
 
 void setup(){
   // Serial port for debugging purposes
-  Serial.begin(115200);
-  Serial2.begin(115200);    // GPIO17 TX;    GPIO 16 RX
+  Serial.begin(9600);
+  Serial2.begin(9600);    // GPIO17 TX;    GPIO 16 RX
   
   WiFi.softAP(ORTO_WEB_SSID_BASENAME, ORTO_WEB_SSID_PASSWD);
 
@@ -105,6 +108,9 @@ void setup(){
   server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/main.js", "application/javascript");
   });
+  server.on("/manual_control.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/manual_control.js", "application/javascript");
+  });
 
   initWebSocket();
 
@@ -117,7 +123,7 @@ void loop() {
   String payload = "";
   while (Serial2.available()){
     payload += (char)Serial2.read();
-    delay(1);
+    delay(3);
   }
   if (payload != "") {
     notifyClients(payload);
