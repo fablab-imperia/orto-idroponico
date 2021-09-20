@@ -15,9 +15,9 @@
 <button id="enable_pump_control" onclick="toggle_maual_control()">Abilita Controllo <span id="manual_automatic">Manuale</span></button>
 
 <div id="manual_control_div" style="opacity: 0; max-height: 0;">
-  <button id="fertilizer" onmousedown="clicked('f')" onmouseup="released('f')">Concime</button>
-  <button id="acid" onmousedown="clicked('a')" onmouseup="released('a')">Acido</button>
-  <button id="pump" onmousedown="clicked('p')" onmouseup="released('p')">Pompa</button>
+  <button id="fertilizer" onmousedown="clicked('f')" ontouchstart="clicked('f')" onmouseup="released('f')" ontouchend="released('f')">Concime</button>
+  <button id="acid" onmousedown="clicked('a')"  ontouchstart="clicked('a')" onmouseup="released('a')" ontouchend="released('a')">Acido</button>
+  <button id="pump" onmousedown="clicked('p')"  ontouchstart="clicked('p')" onmouseup="released('p')" ontouchend="released('p')">Pompa</button>
 </div>
 
 
