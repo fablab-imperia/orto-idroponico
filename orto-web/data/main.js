@@ -37,11 +37,11 @@ function onClose(event) {
   setTimeout(initWebSocket, 2000);
 }
 function onMessage(event) {
-  document.getElementById('debug').innerText = event.data;
+  document.getElementById('log').innerText = new Date().toLocaleString(); + event.data + '\n' + document.getElementById('log').innerText;
   let data = JSON.parse(event.data);
   console.log(data);
 
-	let canvas = document.getElementById("canvas_id");
+	let canvas = document.getElementById("gauge_canvas");
 	let ctx = canvas.getContext('2d');
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
   draw_gauge(ctx, temp_gauge, data['temp'], ' C');

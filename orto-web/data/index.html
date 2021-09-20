@@ -7,9 +7,8 @@
   <meta charset="utf-8"/>
 </head>
 <body>
-<span id="debug"></span>
 
-<canvas id="canvas_id" width="1500" height="600">
+<canvas id="gauge_canvas" width="1500" height="600">
   Your browser does not support the canvas element.
 </canvas>
 
@@ -20,6 +19,9 @@
   <button id="acid" onmousedown="clicked('a')" onmouseup="released('a')">Acido</button>
   <button id="pump" onmousedown="clicked('p')" onmouseup="released('p')">Pompa</button>
 </div>
+
+
+<div id="log"></div>
 
 <script src="main.js"></script>
 <script src="manual_control.js"></script>

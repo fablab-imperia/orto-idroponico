@@ -1,3 +1,6 @@
+body {
+  text-align: center;
+}
 
 button {
   background-color: #4CAF5030;
@@ -14,7 +17,7 @@ button {
   border-radius: 8px;
   border: 2px solid #4CAF50;
   transition-duration: 0.4s;
-  min-width: 130px;
+  min-width: 50%;
   min-height: 20px;
 }
 
@@ -37,4 +40,14 @@ button:disabled {
   border: 2px solid #4CAF5030;
   +box-shadow: 0 1px #fff;
   cursor: not-allowed;
+}
+
+.gauge_canvas {
+  min-width: 100%;
+}
+
+.log {
+  width: 100%;
+  max-height: 150px;
+  overflow: scroll;
 }
