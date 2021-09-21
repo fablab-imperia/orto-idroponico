@@ -7,6 +7,9 @@ const PING_DELAY = 100;
 function set_maual_control(toggle = true, send_command = true) {
   if (toggle) {
     manual_control = !manual_control;
+    if (manual_control) {
+      water_pump_active = false;
+    }
   }
   if (send_command) {
     if (manual_control) {
@@ -21,7 +24,6 @@ function set_maual_control(toggle = true, send_command = true) {
     document.getElementById('manual_control_div').style.maxHeight = '100%';
     document.getElementById('manual_control_div').style.opacity = '1';
     document.getElementById('water_pump_action_text').innerText = 'Attiva';
-    water_pump_active = false;
   } else {
     document.getElementById('manual_automatic').innerText = 'Manuale';
     document.getElementById('manual_control_div').style.maxHeight = '0';

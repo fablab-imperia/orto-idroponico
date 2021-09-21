@@ -57,10 +57,6 @@ function onMessage(event) {
 function onLoad(event) {
   initWebSocket();
 }
-function toggle(){
-  websocket.send('toggle');
-}
-
 
 
 
