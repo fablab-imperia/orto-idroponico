@@ -133,11 +133,13 @@ void readAndShowSensorValues() {
   lcd.print("    ");          // Clear next cells
 
 
-  char payload[50];
+  char payload[200];
   //  JsonObject json = jsonBuffer.to<JsonObject>();
   doc["temp"] = temperatureC + random(-10, 10);
   doc["ph"] = phValues.value + random(-5, 5);
   doc["cond"] = condValues.value + random(0, 2000);
+  doc["pump_on"] = waterPump.isOn();
+  doc["manual_control"] = manual_control;
 
   serializeJson(doc, payload);
 

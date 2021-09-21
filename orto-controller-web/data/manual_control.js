@@ -4,12 +4,16 @@ let manual_type = '';
 let water_pump_active = false;
 const PING_DELAY = 100;
 
-function toggle_maual_control() {
-  manual_control = !manual_control;
-  if (manual_control) {
-    websocket.send("T;");
-  } else {
-    websocket.send("F;");
+function set_maual_control(toggle = true, send_command = true) {
+  if (toggle) {
+    manual_control = !manual_control;
+  }
+  if (send_command) {
+    if (manual_control) {
+      websocket.send("M");    // Manual control
+    } else {
+      websocket.send("U");    // aUtomatic control
+    }
   }
 
   if (manual_control) {
@@ -25,15 +29,23 @@ function toggle_maual_control() {
   }
 }
 
-function toggle_pump() {
-  water_pump_active = !water_pump_active;
+function set_pump(toggle = true, send_command = true) {
+  if (toggle) {
+    water_pump_active = !water_pump_active;
+  }
+
+  if (send_command) {
+    if (water_pump_active) {
+      websocket.send('P');
+    } else {
+      websocket.send('p');
+    }
+  }
 
   if (water_pump_active) {
     document.getElementById('water_pump_action_text').innerText = 'Disattiva';
-    websocket.send('P');
   } else {
     document.getElementById('water_pump_action_text').innerText = 'Attiva';
-    websocket.send('p');
   }
 }
 

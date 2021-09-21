@@ -43,13 +43,6 @@ void notifyClients(String payload) {
   ws.textAll(payload);
 }
 
-void handleWebSocketMessage(void *arg, uint8_t *data, size_t len) {
-  AwsFrameInfo *info = (AwsFrameInfo*)arg;
-  if (info->final && info->index == 0 && info->len == len && info->opcode == WS_TEXT) {
-
-  }
-}
-
 void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
   switch (type) {
     case WS_EVT_CONNECT:
@@ -59,16 +52,15 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
       Serial.printf("WebSocket client #%u disconnected\n", client->id());
       break;
     case WS_EVT_DATA:
-      int i = 0;
-      char payload = *(data + i);
+      char payload = *data;
       Serial.println(payload);
 
-      if (payload == 'T') {
+      if (payload == 'M') {           // Manual Control
         manual_control = true;
         acidPump.turnOff();
         fertilizerPump.turnOff();
         waterPump.turnOff();
-      } else if (payload == 'F') {
+      } else if (payload == 'U') {    // aUtomatic Control
         manual_control = false;
         acidPump.turnOff();
         fertilizerPump.turnOff();

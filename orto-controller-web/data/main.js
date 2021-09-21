@@ -41,6 +41,12 @@ function onMessage(event) {
   let data = JSON.parse(event.data);
   console.log(data);
 
+  manual_control = data['manual_control'];
+  water_pump_active = data['pump_on'];
+
+  set_maual_control(toggle = false, send_command = false);
+  set_pump(toggle = false, send_command = false);
+
 	let canvas = document.getElementById("gauge_canvas");
 	let ctx = canvas.getContext('2d');
 	ctx.clearRect(0, 0, canvas.width, canvas.height);

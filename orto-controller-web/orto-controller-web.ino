@@ -48,7 +48,7 @@ AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
 // JSON buffer
-StaticJsonDocument<200> doc;
+StaticJsonDocument<500> doc;
 
 
 /*************************************************************
