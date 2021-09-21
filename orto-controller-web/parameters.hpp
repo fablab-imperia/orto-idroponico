@@ -47,7 +47,7 @@ along with Nome-Programma.  If not, see <http://www.gnu.org/licenses/>.
 #define THRESHOLD_VALUE_CONDUCTIVITY 900
 
 // After MANUAL_CONTROL_PUMP_TIMEOUT ms all pumps will be turned off (without any other command)
-#define MANUAL_CONTROL_PERISTALTIC_PUMP_TIMEOUT 800
+#define MANUAL_CONTROL_PERISTALTIC_PUMP_TIMEOUT 400
 
 #define SERIAL_BAUDRATE 115200
 #define ADC_MAX_VALUES 4096

@@ -60,31 +60,35 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
         acidPump.turnOff();
         fertilizerPump.turnOff();
         waterPump.turnOff();
+        manual_peristaltic_active = false;
       } else if (payload == 'U') {    // aUtomatic Control
         manual_control = false;
         acidPump.turnOff();
         fertilizerPump.turnOff();
         waterPump.turnOff();
+        manual_peristaltic_active = false;
       }
       if (manual_control) {
         if (payload == 'F') {
           fertilizerPump.turnOn();
           manual_peristaltic_active = true;
-          lastswitch = millis();
+          lastping = millis();
+          Serial.print("F - ping       ");
+          Serial.println(lastping);
         } else if (payload == 'A') {
           acidPump.turnOn();
           manual_peristaltic_active = true;
-          lastswitch = millis();
+          lastping = millis();
         } else if (payload == 'P') {
           waterPump.turnOn();
         } else if (payload == 'f') {
           fertilizerPump.turnOff();
           manual_peristaltic_active = false;
-          lastswitch = millis();
+          lastping = millis();
         } else if (payload == 'a') {
           acidPump.turnOff();
           manual_peristaltic_active = false;
-          lastswitch = millis();
+          lastping = millis();
         } else if (payload == 'p') {
           waterPump.turnOff();
         }

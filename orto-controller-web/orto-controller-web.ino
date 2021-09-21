@@ -82,6 +82,7 @@ Relay acidPump = Relay(PIN_PERISTALTIC_PUMP_ACID);
 
 //TIMER
 unsigned long lastswitch = 0;
+unsigned long lastping = 0;
 unsigned long lastdisplay = 0;
 
 // Manual or automatic control state
@@ -142,9 +143,17 @@ void loop() {
 
 
   if (manual_control) {
-    if (millis() - lastswitch > MANUAL_CONTROL_PERISTALTIC_PUMP_TIMEOUT) {
+    unsigned long t = millis();
+    if ((t - lastping) > MANUAL_CONTROL_PERISTALTIC_PUMP_TIMEOUT && t >= lastping && manual_peristaltic_active) {
       acidPump.turnOff();
       fertilizerPump.turnOff();
+      manual_peristaltic_active = false;
+      Serial.print("Turning off peristaltic pumps: no ping received in ");
+      Serial.print(MANUAL_CONTROL_PERISTALTIC_PUMP_TIMEOUT);
+      Serial.print(" ms -  ");
+      Serial.print(t);
+      Serial.print("  -  ");
+      Serial.println(lastping);
     }
   } else {
     if (millis() - lastdisplay >= TIME_BETWEEN_SENSOR_READS) {
