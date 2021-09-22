@@ -1,5 +1,14 @@
 let editing = false;
 
+let config_values = {
+  pH_threshold : 0,
+  cond_threshold : 0,
+  peristaltic_time : 0,
+  control_cycle_time : 0,
+  water_pump_cycle_time : 0,
+  water_pump_active_time : 0
+}
+
 function editing_config(element) {
   editing = true;
   document.getElementById('save_config').disabled = false;
@@ -18,14 +27,12 @@ function save_automatic_config () {
 }
 
 function update_config_values(data) {
-  let config_values = {
-    pH_threshold : data['ph_th'],
-    cond_threshold : data['cond_th'],
-    peristaltic_time : data['t_peristaltic'],
-    control_cycle_time : data['t_reads'],
-    water_pump_cycle_time : data['t_pump_cycle'],
-    water_pump_active_time : data['t_pump_active']
-  }
+  config_values.pH_threshold = data['ph_th'];
+  config_values.cond_threshold = data['cond_th'];
+  config_values.peristaltic_time = data['t_peristaltic'];
+  config_values.control_cycle_time = data['t_reads'];
+  config_values.water_pump_cycle_time = data['t_pump_cycle'];
+  config_values.water_pump_active_time = data['t_pump_active'];
 
   let parameters = ['pH_threshold', 'cond_threshold', 'peristaltic_time', 'control_cycle_time', 'water_pump_cycle_time', 'water_pump_active_time'];
 
