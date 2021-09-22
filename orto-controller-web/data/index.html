@@ -70,8 +70,12 @@
   <button id="save_config" onclick="save_automatic_config()" disabled>Salva</button>
 </div>
 
+<br>
 
-<div id="log"></div>
+
+<button onclick="document.getElementById('log').toggleAttribute('hidden')" style="min-width: 35%">Mostra/Nascondi Log</button>
+
+<div id="log" hidden></div>
 
 <script src="manual_control.js"></script>
 <script src="automatic_config.js"></script>

@@ -63,7 +63,7 @@ function onClose(event) {
 }
 
 function onMessage(event) {
-  document.getElementById('log').innerText = new Date().toLocaleString() + '  -  ' + event.data + '\n' + document.getElementById('log').innerText;
+  document.getElementById('log').innerText = new Date().toLocaleString() + '  -  ' + event.data + '\n' + document.getElementById('log').innerText.slice(0, 200000);  // Keep only about 1000 lines
   let data = JSON.parse(event.data);
   //console.log(data);
 

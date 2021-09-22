@@ -48,7 +48,7 @@ button:disabled {
 
 #log {
   width: 100%;
-  height: 100px;
+  height: 500px;
   overflow-y: scroll;
   border: solid;
 }
@@ -62,11 +62,16 @@ select {
 }
 
 label {
-  width: 30%;
+  width: 20%;
   display: inline-block;
 }
 
 input {
   width: 20%;
   margin: 5px;
+}
+
+
+#save_config {
+  min-width: 30%;
 }
