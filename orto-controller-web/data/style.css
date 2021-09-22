@@ -56,3 +56,17 @@ button:disabled {
 div {
   transition: all 0.3s ease;
 }
+
+select {
+  width: 10%;
+}
+
+label {
+  width: 30%;
+  display: inline-block;
+}
+
+input {
+  width: 20%;
+  margin: 5px;
+}

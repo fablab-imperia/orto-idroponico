@@ -2,7 +2,7 @@ let manual_control = false;
 let manual_interval = 0;
 let manual_type = '';
 let water_pump_active = false;
-const PING_DELAY = 100;
+const PING_DELAY = 200;
 
 function set_maual_control(toggle = true, send_command = true) {
   if (toggle) {
@@ -21,13 +21,19 @@ function set_maual_control(toggle = true, send_command = true) {
 
   if (manual_control) {
     document.getElementById('manual_automatic').innerText = 'Automatico';
-    document.getElementById('manual_control_div').style.maxHeight = '100%';
     document.getElementById('manual_control_div').style.opacity = '1';
+    document.getElementById('manual_control_div').style.display = 'block';
     document.getElementById('water_pump_action_text').innerText = 'Attiva';
+
+    document.getElementById('automatic_control_div').style.opacity = '0';
+        document.getElementById('automatic_control_div').style.display = 'none';
   } else {
     document.getElementById('manual_automatic').innerText = 'Manuale';
-    document.getElementById('manual_control_div').style.maxHeight = '0';
     document.getElementById('manual_control_div').style.opacity = '0';
+    document.getElementById('manual_control_div').style.display = 'none';
+
+    document.getElementById('automatic_control_div').style.opacity = '1';
+    document.getElementById('automatic_control_div').style.display = 'block';
   }
 }
 

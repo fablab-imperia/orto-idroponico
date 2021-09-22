@@ -21,6 +21,7 @@ const cond_gauge = {x:1200, y:300, r:160, width:40, angle_ref:Math.PI/6, backgro
 
 var gateway = `ws://${window.location.hostname}/ws`;
 var websocket;
+
 window.addEventListener('load', onLoad);
 function initWebSocket() {
   console.log('Trying to open a WebSocket connection...');
@@ -29,17 +30,20 @@ function initWebSocket() {
   websocket.onclose   = onClose;
   websocket.onmessage = onMessage; // <-- add this line
 }
+
 function onOpen(event) {
   console.log('Connection opened');
 }
+
 function onClose(event) {
   console.log('Connection closed');
   setTimeout(initWebSocket, 2000);
 }
+
 function onMessage(event) {
   document.getElementById('log').innerText = new Date().toLocaleString() + '  -  ' + event.data + '\n' + document.getElementById('log').innerText;
   let data = JSON.parse(event.data);
-  console.log(data);
+  //console.log(data);
 
   manual_control = data['manual_control'];
   water_pump_active = data['pump_on'];
@@ -53,7 +57,10 @@ function onMessage(event) {
   draw_gauge(ctx, temp_gauge, data['temp'], ' C');
   draw_gauge(ctx, ph_gauge, data['ph'], ' pH');
   draw_gauge(ctx, cond_gauge, data['cond'], '');
+
+  update_config_values(data);
 }
+
 function onLoad(event) {
   initWebSocket();
 }

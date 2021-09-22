@@ -14,17 +14,68 @@
 
 <button id="enable_pump_control" onclick="set_maual_control()">Abilita Controllo <span id="manual_automatic">Manuale</span></button>
 
-<div id="manual_control_div" style="opacity: 0; max-height: 0;">
+<div id="manual_control_div" style="opacity: 0; display: none;">
   <button id="fertilizer" onmousedown="clicked('f')" ontouchstart="clicked('f')" onmouseup="released('f')" ontouchend="released('f')">Concime</button>
   <button id="acid" onmousedown="clicked('a')"  ontouchstart="clicked('a')" onmouseup="released('a')" ontouchend="released('a')">Acido</button>
   <button id="pump" onclick="set_pump()"><span id="water_pump_action_text">Attiva</span> Pompa</button>
 </div>
 
 
+<div id="automatic_control_div" style="opacity: 1; display: block;">
+  <label for="pH_threshold">pH Threshold:</label>
+  <input type="number" step="0.1" id="pH_threshold" name="pH_threshold" min="0" max="14" oninput="editing_config(this)">
+  <select id="pH_threshold_um" disabled oninput="editing_config(this)">
+    <option value="1" selected>pH</option>
+  </select><br>
+
+  <label for="cond_threshold">Conducibilità Threshold:</label>
+  <input type="number" step="100" id="cond_threshold" name="cond_threshold" min="0" oninput="editing_config(this)">
+  <select id="cond_threshold_um" oninput="editing_config(this)">
+    <option value="1" selected>uS/cm</option>
+    <option value="1000">mS/cm</option>
+  </select><br>
+
+  <label for="peristaltic_time">Tempo attivazione peristaltiche:</label>
+  <input type="number" id="peristaltic_time" name="peristaltic_time" min="0" oninput="editing_config(this)">
+  <select id="peristaltic_time_um" oninput="editing_config(this)">
+    <option value="1">ms</option>
+    <option value="1000" selected>s</option>
+    <option value="60000">min</option>
+  </select><br>
+
+  <label for="control_cycle_time">Periodo controllo automatico:</label>
+  <input type="number" id="control_cycle_time" name="control_cycle_time" min="0" oninput="editing_config(this)">
+  <select id="control_cycle_time_um" oninput="editing_config(this)">
+    <option value="1">s</option>
+    <option value="60">min</option>
+    <option value="3600" selected>h</option>
+  </select><br>
+
+  <label for="water_pump_cycle_time">Periodo pompa acqua:</label>
+  <input type="number" id="water_pump_cycle_time" name="water_pump_cycle_time" min="0" oninput="editing_config(this)">
+  <select id="water_pump_cycle_time_um" oninput="editing_config(this)">
+    <option value="1">s</option>
+    <option value="60">min</option>
+    <option value="3600" selected>h</option>
+  </select><br>
+
+  <label for="water_pump_active_time">Tempo attivazione pompa:</label>
+  <input type="number" id="water_pump_active_time" name="water_pump_active_time" min="0" oninput="editing_config(this)">
+  <select id="water_pump_active_time_um" oninput="editing_config(this)">
+    <option value="1">s</option>
+    <option value="60">min</option>
+    <option value="3600" selected>h</option>
+  </select><br>
+
+  <button id="save_config" onclick="save_automatic_config()" disabled>Salva</button>
+</div>
+
+
 <div id="log"></div>
 
-<script src="main.js"></script>
 <script src="manual_control.js"></script>
+<script src="automatic_config.js"></script>
+<script src="main.js"></script>
 
 </body>
 </html>

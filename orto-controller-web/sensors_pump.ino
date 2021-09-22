@@ -32,7 +32,7 @@ void readSensorsAndStartPumps() {
   convertMillisToTimeString(timeString, 20, lastswitch);
 
   // If PH value is found above threshold
-  if (phValues.value > THRESHOLD_VALUE_PH)
+  if (phValues.value > threshold_value_ph)
   {
     Serial.println("---------PH LEVEL OVER THRESHOLD: NEED TO START ACID PUMP");
     //start acid pump
@@ -40,7 +40,7 @@ void readSensorsAndStartPumps() {
     Serial.print("---------ACID PUMP STARTS at ");
     Serial.println(timeString);
     //schedule a task for stopping the pump after specific number of seconds
-    delay(TIME_PERISTALTIC_PUMP_ACID_ON);  // TODO: manage delay in loop with non-blocking code
+    delay(time_peristaltic_pump_on);  // TODO: manage delay in loop with non-blocking code
     acidPumpOff();
   }
   else
@@ -48,21 +48,21 @@ void readSensorsAndStartPumps() {
     Serial.print("PH IS ");
     Serial.println(phValues.value);
     Serial.print("THRESHOLD IS ");
-    Serial.println(THRESHOLD_VALUE_PH);
+    Serial.println(threshold_value_ph);
     Serial.print("NO NEED TO ACTIVATE PUMP AT ");
     Serial.println(timeString);
   }
 
 
   // If conductivity value is found below threshold
-  if (condValues.value < THRESHOLD_VALUE_CONDUCTIVITY)
+  if (condValues.value < threshold_value_conductivity)
   {
     Serial.println("---------CONDUCTIVITY LEVEL UNDER THRESHOLD: NEED TO START FERTILIZER PUMP");
     //start fertilizer pump
     fertilizerPump.turnOn();
     Serial.print("---------FERTILIZER PUMP STARTS at ");
     Serial.println(timeString);
-    delay(TIME_PERISTALTIC_PUMP_FERTILIZER_ON); // TODO: manage delay in loop with non-blocking code
+    delay(time_peristaltic_pump_on); // TODO: manage delay in loop with non-blocking code
     acidPumpOff();
   }
   else
@@ -70,7 +70,7 @@ void readSensorsAndStartPumps() {
     Serial.print("CONDUCTIVITY IS ");
     Serial.println(condValues.value);
     Serial.print("THRESHOLD IS ");
-    Serial.println(THRESHOLD_VALUE_CONDUCTIVITY);
+    Serial.println(threshold_value_conductivity);
     Serial.print("NO NEED TO ACTIVATE PUMP AT ");
     Serial.println(timeString);
   }
@@ -133,17 +133,12 @@ void readAndShowSensorValues() {
   lcd.print("    ");          // Clear next cells
 
 
-  char payload[200];
-  //  JsonObject json = jsonBuffer.to<JsonObject>();
-  doc["temp"] = temperatureC + random(-10, 10);
-  doc["ph"] = phValues.value + random(-5, 5);
-  doc["cond"] = condValues.value + random(0, 2000);
-  doc["pump_on"] = waterPump.isOn();
-  doc["manual_control"] = manual_control;
+  doc["temp"] = temperatureC;
+  doc["ph"] = phValues.value;
+  doc["cond"] = condValues.value;
 
-  serializeJson(doc, payload);
 
-  notifyClients(payload);
+  send_current_status();
 }
 
 

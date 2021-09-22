@@ -1,3 +1,21 @@
+void send_current_status () {
+  doc["pump_on"] = waterPump.isOn();
+  doc["manual_control"] = manual_control;
+  doc["ph_th"] = threshold_value_ph;
+  doc["cond_th"] = threshold_value_conductivity;
+  doc["t_peristaltic"] = time_peristaltic_pump_on;
+  doc["t_reads"] = time_between_sensor_reads;
+  doc["t_pump_cycle"] = time_water_pump_cycle;
+  doc["t_pump_active"] = time_water_pump_active;
+
+
+  char payload[800];
+  serializeJson(doc, payload);
+
+  notifyClients(payload);
+}
+
+
 void fs_web_init() {
 
   SPIFFS.begin();
@@ -28,6 +46,9 @@ void fs_web_init() {
   server.on("/manual_control.js", HTTP_GET, [](AsyncWebServerRequest * request) {
     request->send(SPIFFS, "/manual_control.js", "application/javascript");
   });
+  server.on("/automatic_config.js", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/automatic_config.js", "application/javascript");
+  });
 
   initWebSocket();
 
@@ -35,8 +56,6 @@ void fs_web_init() {
   server.begin();
 
 }
-
-
 
 
 void notifyClients(String payload) {
@@ -68,13 +87,12 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
         waterPump.turnOff();
         manual_peristaltic_active = false;
       }
+
       if (manual_control) {
         if (payload == 'F') {
           fertilizerPump.turnOn();
           manual_peristaltic_active = true;
           lastping = millis();
-          Serial.print("F - ping       ");
-          Serial.println(lastping);
         } else if (payload == 'A') {
           acidPump.turnOn();
           manual_peristaltic_active = true;
@@ -93,6 +111,34 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
           waterPump.turnOff();
         }
       }
+
+      if (payload >= '0' && payload <= '5') {
+        String value_string = "";
+        int i = 1;
+        while (*(data + i) != ';' && i < 15) {
+          value_string += (char) * (data + i);
+          i++;
+        }
+
+        if (payload == '0') {
+          threshold_value_ph = value_string.toFloat();
+        } else if (payload == '1') {
+          threshold_value_conductivity = value_string.toInt();
+        } else if (payload == '2') {
+          time_peristaltic_pump_on = value_string.toInt();
+        } else if (payload == '3') {
+          time_between_sensor_reads = value_string.toInt();
+        } else if (payload == '4') {
+          time_water_pump_cycle = value_string.toInt();
+        } else if (payload == '5') {
+          time_water_pump_active = value_string.toInt();
+        }
+
+        save_configuration(payload);
+      }
+
+      send_current_status();
+
       break;
       /*    case WS_EVT_PONG:
           case WS_EVT_ERROR:

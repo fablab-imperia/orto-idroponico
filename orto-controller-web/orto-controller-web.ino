@@ -22,6 +22,9 @@
 #include <HardwareSerial.h>
 #include <ArduinoJson.h>
 
+// Include library to save parameters in EEPROM
+#include <EEPROM.h>
+
 //Includes for LCD
 #include <Wire.h>
 #include <LiquidCrystal_I2C.h>
@@ -48,7 +51,7 @@ AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
 
 // JSON buffer
-StaticJsonDocument<500> doc;
+StaticJsonDocument<800> doc;
 
 
 /*************************************************************
@@ -89,13 +92,21 @@ unsigned long lastdisplay = 0;
 bool manual_control = false;
 bool manual_peristaltic_active = false;
 
+// Parameters
+float threshold_value_ph = DEFAULT_THRESHOLD_VALUE_PH;                          // pH
+int threshold_value_conductivity = DEFAULT_THRESHOLD_VALUE_CONDUCTIVITY;        // uS/cm (?)
+unsigned int time_peristaltic_pump_on = DEFAULT_TIME_PERISTALTIC_PUMP_ON;       // ms
+unsigned long time_between_sensor_reads = DEFAULT_TIME_BETWEEN_SENSOR_READS;    // s
+unsigned long time_water_pump_cycle = DEFAULT_TIME_WATER_PUMP_CYCLE;            // s
+unsigned long time_water_pump_active = DEFAULT_TIME_WATER_PUMP_ACTIVE;          // s
+
 void setup() {
   // Serial port for debugging purposes
   Serial.begin(SERIAL_BAUDRATE);
   Serial.println("Starting...");
   Banner::printSerial();
 
-
+  EEPROM.begin(EEPROM_USED_SIZE);
 
   //XYPair phCalibrationPoints[] = { {1.80f, 6.88f}, {1.46f, 4.00f,}, {2.13f, 9.23f}};//stefano
   XYPair phCalibrationPoints[] = {{1.51f, 4.01f,}, {1.86f, 7.00f}, {2.08f, 8.80f}, {2.23f, 10.01f,}};//Vale
@@ -114,6 +125,8 @@ void setup() {
   waterPump.init();
   fertilizerPump.init();
   acidPump.init();
+
+  retrive_configuration();
 
   // Stops all pumps at beginning
   acidPump.turnOff();
@@ -156,11 +169,11 @@ void loop() {
       Serial.println(lastping);
     }
   } else {
-    if (millis() - lastdisplay >= TIME_BETWEEN_SENSOR_READS) {
+    if ((millis() - lastdisplay)/1000 >= time_between_sensor_reads) {
       readSensorsAndStartPumps();
     }
-    if (TIME_WATER_PUMP_CYCLE) {
-      if ((millis()/1000 % TIME_WATER_PUMP_CYCLE) < TIME_WATER_PUMP_ACTIVE) {
+    if (time_water_pump_cycle) {
+      if ((millis()/1000 % time_water_pump_cycle) < time_water_pump_active) {
         waterPump.turnOn();
       } else {
         waterPump.turnOff();
