@@ -1,9 +1,9 @@
 # Orto idroponico
-> Sistema di controllo per coltivazione idroponica che consente circolazione dell'acqua e parziale correzione dei valori di PH e conducibilità della stessa. 
+> Sistema di controllo per coltivazione idroponica che consente circolazione dell'acqua e parziale correzione dei valori di PH e conducibilità della stessa.
 
 *Read this in other languages: [English](README.EN.md).*
 
-## Schema di montaggio
+# Schema di montaggio
 
 I collegamenti ai pin sono definiti nel file ```pinouts.hpp``` e possono essere modificati opportunamente (prestando attenzione a non utilizzare impropriamente i pin riservati o con funzioni particolari, si veda il pinout della scheda per i dettagli).
 
@@ -13,6 +13,7 @@ Prossimamente verrà pubblicato uno schema completo del progetto.
 
 - [Arduino IDE](#arduino-ide)
 - [Visual Studio Code e PlatformIO](#visual-studio-code-e-platformio)
+- [Utilizzo e Interfaccia Grafica](#utilizzo-e-interfaccia-grafica)
 - [Licenza](#licenza)
 
 ## Arduino IDE
@@ -30,7 +31,7 @@ git clone https://github.com/fablab-imperia/orto-idroponico.git
   * ArduinoJson
   * ESPAsyncWebServer
   * AsyncTCP
-  
+
 4. Installazione della scheda ESP32 nell'IDE:
   - a. Da *File > Preferenze > URL Gestore Schede Aggiuntive* aggiungere ```https://dl.espressif.com/dl/package_esp32_index.json```
   - b. Da *Strumenti > Schede > Gestore Schede* cercare ESP32 e installare la relativa scheda
@@ -40,12 +41,50 @@ git clone https://github.com/fablab-imperia/orto-idroponico.git
 
 
  ## Visual Studio Code e PlatformIO
- 
+
  Per procedere con la compilazione mediante Visual Studio Code:
  1. Installare [Visual Studio Code](https://code.visualstudio.com/)
  2. Installare l'estensione [Platformio](https://platformio.org/install/ide?install=vscode)
- 3. Aprire la cartella orto-controller 
+ 3. Aprire la cartella orto-controller
  4. Avviare la compilazione  
+
+# Utilizzo e Interfaccia Grafica
+Dopo aver caricato correttamente il programma e i dati, la scheda crea una rete WiFi con SSID e password specificate [qui](https://github.com/fablab-imperia/orto-idroponico/blob/main/orto-controller-web/parameters.hpp#L22) (di default SSID ```OrtoWeb``` e password ```OrtoWeb12345```).
+Collegarsi con le credenziali corrette alla rete WiFi e, tramite un browser (es. Firefox, Chrome), connettersi all'indirizzo IP della scheda, stampato all'avvio sul monitor seriale (di default ```192.168.4.1```).
+
+Verrà visualizzata la seguente interfaccia grafica.
+
+![alt Manual Control Interface](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/images/Screenshoot_ESP_web_gui_manual_numbered.png)
+
+![alt Automatic Control Interface](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/images/Screenshoot_ESP_web_gui_automatic_numbered.png)
+
+L'interfaccia è composta dei seguenti elementi:
+
+1. Indicatore sensori (i pallini neri negli indicatori *b* e *c* indicano il target attualmente impostato)
+   * a. Temperatura dell'acqua (range indicatore: 0-35 °C)
+   * b. pH dell'acqua (range indicatore: 0-14)
+   * c. Conducibilita dell'acqua (range indicatore: 0-3000 uS/cm)
+
+2. Pannello di controllo manuale (attivabile con pulsante 4.a)
+   * a. Pulsante per abilitare il controllo automatico con i parametri definiti alla sezione (4); alla pressione questa sezione viene sostituita dalla sezione (4)
+   * b. Attiva manualmente la pompa peristaltica del concime per la durata della pressione del pulsante (interrompe l'erogazione appena si rilascia il bottone)
+   * c. Attiva manualmente la pompa peristaltica dell'acido (per la correzione del pH) per la durata della pressione del pulsante (interrompe l'erogazione appena si rilascia il bottone)
+   * d. Attiva/Disattiva la pompa per il ricircolo dell'acqua, alla pressione commuta il suo stato e la sua funzione (da Attiva a Disattiva e viceversa)
+
+3. Mastra o Nasconde i dati grezzi ricevuti dalla scheda, mostrati nella sezione (5) (di default sono nascosti)
+
+4. Pannello di controllo automatico (attivabile con pulsante 2.a)
+   * a. Pulsante per abilitare il controllo manuale, sospendento la correzione automatica di fertilizzante e pH e spegnendo la pompa di ricircolo; alla pressione questa sezione viene sostituita dalla sezione (2)
+   * b. Parametri di configurazione del controllo automatico:
+     * a. valore target del pH
+     * b. valore target della conducibilità
+     * c. durata di attivazione delle pompe di fertilizzante e acido in caso di correzione dei valori
+     * d. tempo che intercorre tra due controlli e correzioni (attivazione pompe peristaltiche) successive
+     * e. durata ciclo periodico di ricircolo dell'acqua
+     * f. tempo di attivazione della pompa per il ricircolo dell'acqua in ogni periodo definito al punto e
+   * c. Il pulsante è normalmente disabilitato, viene attivato automaticamente quando si modifica uno o più dei precedenti parameteri (i parametri modificati vengono evidenziati in verde). Le modifiche dei parametri hanno effetti solo dopo il salvataggio. I dati salvati vengono mantenuti anche dopo lo spegnimento, perché memorizzati nella memoria EEPROM.
+
+5. Log dei dati grezzi ricevuti dall scheda, la visualizzazione può essere abilitata e disabilitata con il pulsante (3)
 
 ## Licenza
 Sistema di gestione orto idroponico Fablab Imperia
