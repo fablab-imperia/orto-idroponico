@@ -15,7 +15,7 @@ You should have received a copy of the GNU General Public License
 along with Nome-Programma.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-const temp_gauge = {x:300, y:300, r:190, width:60, angle_ref:Math.PI/6, background_color:'#ccc', min:0, max:40, fixed:1, um:' C'};
+const temp_gauge = {x:300, y:300, r:190, width:60, angle_ref:Math.PI/6, background_color:'#ccc', min:0, max:35, fixed:1, um:'°C'};
 const ph_gauge = {x:850, y:300, r:190, width:60, angle_ref:Math.PI/6, background_color:'#ccc', min:0, max:14, fixed:1, um:'pH'};
 const cond_gauge = {x:1400, y:300, r:190, width:60, angle_ref:Math.PI/6, background_color:'#ccc', min:0, max:3000, fixed:0, um:'uS/cm'};
 
