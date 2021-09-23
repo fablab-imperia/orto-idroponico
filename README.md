@@ -3,18 +3,21 @@
 
 *Read this in other languages: [English](README.EN.md).*
 
+### Sommario
+- [Compilazione del Software](#compilazione-del-software)
+  - [Arduino IDE](#arduino-ide)
+  - [Visual Studio Code e PlatformIO](#visual-studio-code-e-platformio)
+- [Utilizzo e Interfaccia Grafica](#utilizzo-e-interfaccia-grafica)
+- [Licenza](#licenza)
+
 # Schema di montaggio
 
 I collegamenti ai pin sono definiti nel file ```pinouts.hpp``` e possono essere modificati opportunamente (prestando attenzione a non utilizzare impropriamente i pin riservati o con funzioni particolari, si veda il pinout della scheda per i dettagli).
 
 Prossimamente verrà pubblicato uno schema completo del progetto.
 
-# Compilazione del software
 
-- [Arduino IDE](#arduino-ide)
-- [Visual Studio Code e PlatformIO](#visual-studio-code-e-platformio)
-- [Utilizzo e Interfaccia Grafica](#utilizzo-e-interfaccia-grafica)
-- [Licenza](#licenza)
+# Compilazione del Software
 
 ## Arduino IDE
 
@@ -37,7 +40,12 @@ git clone https://github.com/fablab-imperia/orto-idroponico.git
   - b. Da *Strumenti > Schede > Gestore Schede* cercare ESP32 e installare la relativa scheda
   - c. Selezionare *ESP32 Dev Module* da *Strumenti > Schede*
 
-5. Avviare la compilazione e caricare il programma sulla scheda (assicurarsi di aver selezionato la scheda e la porta seriale corretta dal menu *Strumenti*)
+5. Installare [ESP32 FS-plugin](https://github.com/me-no-dev/arduino-esp32fs-plugin) nell'ide di Arduino
+
+6. Avviare la compilazione e caricare il programma sulla scheda (assicurarsi di aver selezionato la scheda e la porta seriale corretta dal menu *Strumenti*)
+
+7. Caricare i file web sulla scheda da *Strumenti > ESP32 Sketch Data Upload*
+
 
 
  ## Visual Studio Code e PlatformIO
@@ -46,7 +54,9 @@ git clone https://github.com/fablab-imperia/orto-idroponico.git
  1. Installare [Visual Studio Code](https://code.visualstudio.com/)
  2. Installare l'estensione [Platformio](https://platformio.org/install/ide?install=vscode)
  3. Aprire la cartella orto-controller
- 4. Avviare la compilazione  
+ 4. Installare le librerie richieste
+ 5. Avviare la compilazione  
+ 6. Caricare i file web sulla scheda
 
 # Utilizzo e Interfaccia Grafica
 Dopo aver caricato correttamente il programma e i dati, la scheda crea una rete WiFi con SSID e password specificate [qui](https://github.com/fablab-imperia/orto-idroponico/blob/main/orto-controller-web/parameters.hpp#L22) (di default SSID ```OrtoWeb``` e password ```OrtoWeb12345```).
