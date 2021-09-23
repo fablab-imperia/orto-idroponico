@@ -5,14 +5,15 @@
 
 ## Schema di montaggio
 
-![alt text](https://github.com/fablab-imperia/orto-idroponico/blob/main/orto-controller/frietzing/orto-idroponico_bb.jpg?raw=true)
+I collegamenti ai pin sono definiti nel file ```pinouts.hpp``` e possono essere modificati opportunamente (prestando attenzione a non utilizzare impropriamente i pin riservati o con funzioni particolari, si veda il pinout della scheda per i dettagli).
 
+Prossimamente verrà pubblicato uno schema completo del progetto.
 
 # Compilazione del software
 
 - [Arduino IDE](#arduino-ide)
 - [Visual Studio Code e PlatformIO](#visual-studio-code-e-platformio)
-- [Licenza](https://github.com/fablab-imperia/orto-idroponico/blob/main/LICENSE)
+- [Licenza](#licenza)
 
 ## Arduino IDE
 
@@ -26,7 +27,17 @@ git clone https://github.com/fablab-imperia/orto-idroponico.git
   * DallasTemperature
   * OneWire
   * LiquidCrystal I2C
-  * TaskScheduler
+  * ArduinoJson
+  * ESPAsyncWebServer
+  * AsyncTCP
+  
+4. Installazione della scheda ESP32 nell'IDE:
+  - a. Da *File > Preferenze > URL Gestore Schede Aggiuntive* aggiungere ```https://dl.espressif.com/dl/package_esp32_index.json```
+  - b. Da *Strumenti > Schede > Gestore Schede* cercare ESP32 e installare la relativa scheda
+  - c. Selezionare *ESP32 Dev Module* da *Strumenti > Schede*
+
+5. Avviare la compilazione e caricare il programma sulla scheda (assicurarsi di aver selezionato la scheda e la porta seriale corretta dal menu *Strumenti*)
+
 
  ## Visual Studio Code e PlatformIO
  
