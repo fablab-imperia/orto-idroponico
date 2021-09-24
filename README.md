@@ -4,18 +4,18 @@
 *Read this in other languages: [English](README.EN.md).*
 
 ### Sommario
+- [Schema di Montaggio](#schema-di-montaggio)
 - [Compilazione del Software](#compilazione-del-software)
   - [Arduino IDE](#arduino-ide)
   - [Visual Studio Code e PlatformIO](#visual-studio-code-e-platformio)
 - [Utilizzo e Interfaccia Grafica](#utilizzo-e-interfaccia-grafica)
 - [Licenza](#licenza)
 
-# Schema di montaggio
+# Schema di Montaggio
 
-I collegamenti ai pin sono definiti nel file ```pinouts.hpp``` e possono essere modificati opportunamente (prestando attenzione a non utilizzare impropriamente i pin riservati o con funzioni particolari, si veda il pinout della scheda per i dettagli).
+I collegamenti ai pin sono definiti nel file ```pinouts.hpp``` e possono essere modificati opportunamente (prestando attenzione a non utilizzare impropriamente i pin riservati o con funzioni particolari, si veda il [pinout della scheda](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/pinouts/esp32-az-delivery.jpg) per i dettagli).
 
-Prossimamente verrà pubblicato uno schema completo del progetto.
-
+![alt Orto Idroponico Schematic](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/images/Schematic_Orto-Idroponico.png)
 
 # Compilazione del Software
 
@@ -23,22 +23,24 @@ Prossimamente verrà pubblicato uno schema completo del progetto.
 
 Per procedere con la compilazione mediante Arduino IDE è possibile procedere con i seguenti passaggi:
 1. Installazione dell'[IDE di Arduino](https://www.arduino.cc/en/software)
+
 2. Clonazione del repository
 ```
 git clone https://github.com/fablab-imperia/orto-idroponico.git
 ```
-3. Installazione delle dipendenze tramite Arduino Library Manager (selezionare *Strumenti > Gestione Librerie* ):
-  * DallasTemperature
-  * OneWire
-  * LiquidCrystal I2C
-  * ArduinoJson
-  * ESPAsyncWebServer
-  * AsyncTCP
+3. Installazione delle dipendenze tramite Arduino Library Manager (selezionare *Sketch > Gestione Librerie* ):
+   * DallasTemperature
+   * OneWire
+   * LiquidCrystal I2C
+   * ArduinoJson
+   * ESPAsyncWebServer
+   * AsyncTCP
+   * Adafruit_ADS1X15
 
 4. Installazione della scheda ESP32 nell'IDE:
-  - a. Da *File > Preferenze > URL Gestore Schede Aggiuntive* aggiungere ```https://dl.espressif.com/dl/package_esp32_index.json```
-  - b. Da *Strumenti > Schede > Gestore Schede* cercare ESP32 e installare la relativa scheda
-  - c. Selezionare *ESP32 Dev Module* da *Strumenti > Schede*
+   - a. Da *File > Preferenze > URL Gestore Schede Aggiuntive* aggiungere ```https://dl.espressif.com/dl/package_esp32_index.json```
+   - b. Da *Strumenti > Schede > Gestore Schede* cercare ESP32 e installare la relativa scheda
+   - c. Selezionare *ESP32 Dev Module* da *Strumenti > Schede*
 
 5. Installare [ESP32 FS-plugin](https://github.com/me-no-dev/arduino-esp32fs-plugin) nell'ide di Arduino
 
@@ -48,15 +50,15 @@ git clone https://github.com/fablab-imperia/orto-idroponico.git
 
 
 
- ## Visual Studio Code e PlatformIO
+## Visual Studio Code e PlatformIO
 
- Per procedere con la compilazione mediante Visual Studio Code:
- 1. Installare [Visual Studio Code](https://code.visualstudio.com/)
- 2. Installare l'estensione [Platformio](https://platformio.org/install/ide?install=vscode)
- 3. Aprire la cartella orto-controller
- 4. Installare le librerie richieste
- 5. Avviare la compilazione  
- 6. Caricare i file web sulla scheda
+Per procedere con la compilazione mediante Visual Studio Code:
+1. Installare [Visual Studio Code](https://code.visualstudio.com/)
+2. Installare l'estensione [Platformio](https://platformio.org/install/ide?install=vscode)
+3. Aprire la cartella orto-controller
+4. Installare le librerie richieste
+5. Avviare la compilazione  
+6. Caricare i file web sulla scheda
 
 # Utilizzo e Interfaccia Grafica
 Dopo aver caricato correttamente il programma e i dati, la scheda crea una rete WiFi con SSID e password specificate [qui](https://github.com/fablab-imperia/orto-idroponico/blob/main/orto-controller-web/parameters.hpp#L22) (di default SSID ```OrtoWeb``` e password ```OrtoWeb12345```).
