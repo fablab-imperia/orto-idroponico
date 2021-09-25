@@ -28,14 +28,14 @@ Per procedere con la compilazione mediante Arduino IDE è possibile procedere co
 ```
 git clone https://github.com/fablab-imperia/orto-idroponico.git
 ```
-3. Installazione delle dipendenze tramite Arduino Library Manager (selezionare *Sketch > Gestione Librerie* ):
-   * DallasTemperature
-   * OneWire
-   * LiquidCrystal I2C
-   * ArduinoJson
-   * ESPAsyncWebServer
-   * AsyncTCP
-   * Adafruit_ADS1X15
+3. Installazione delle dipendenze tramite Arduino Library Manager (selezionare *Sketch > Gestione Librerie* ) oppure scaricando i file zip dal sito di ogni libreria oppure copiando le librerie della cartella [libraries](https://github.com/fablab-imperia/orto-idroponico/tree/main/libraries):
+  * [DallasTemperature](https://www.milesburton.com/Dallas_Temperature_Control_Library)
+  * [OneWire](http://www.pjrc.com/teensy/td_libs_OneWire.html)
+  * [LiquidCrystal I2C](https://github.com/marcoschwartz/LiquidCrystal_I2C)
+  * [ArduinoJson](https://github.com/bblanchon/ArduinoJson)
+  * [ESPAsyncWebServer](https://github.com/me-no-dev/ESPAsyncWebServer)
+  * [AsyncTCP](https://github.com/me-no-dev/AsyncTCP)
+  * [Adafruit_ADS1X15](https://github.com/adafruit/Adafruit_ADS1X15)
 
 4. Installazione della scheda ESP32 nell'IDE:
    - a. Da *File > Preferenze > URL Gestore Schede Aggiuntive* aggiungere ```https://dl.espressif.com/dl/package_esp32_index.json```
@@ -44,9 +44,11 @@ git clone https://github.com/fablab-imperia/orto-idroponico.git
 
 5. Installare [ESP32 FS-plugin](https://github.com/me-no-dev/arduino-esp32fs-plugin) nell'ide di Arduino
 
-6. Avviare la compilazione e caricare il programma sulla scheda (assicurarsi di aver selezionato la scheda e la porta seriale corretta dal menu *Strumenti*)
+6. Aprire il file [orto-controller-web/orto-controller-web.ino](https://github.com/fablab-imperia/orto-idroponico/blob/main/orto-controller-web/orto-controller-web.ino) nell'IDE di Arduino
 
-7. Caricare i file web sulla scheda da *Strumenti > ESP32 Sketch Data Upload*
+7. Avviare la compilazione e caricare il programma sulla scheda (assicurarsi di aver selezionato la scheda e la porta seriale corretta dal menu *Strumenti*)
+
+8. Caricare i file web sulla scheda da *Strumenti > ESP32 Sketch Data Upload*
 
 
 
@@ -55,7 +57,7 @@ git clone https://github.com/fablab-imperia/orto-idroponico.git
 Per procedere con la compilazione mediante Visual Studio Code:
 1. Installare [Visual Studio Code](https://code.visualstudio.com/)
 2. Installare l'estensione [Platformio](https://platformio.org/install/ide?install=vscode)
-3. Aprire la cartella orto-controller
+3. Aprire la cartella orto-controller-web
 4. Installare le librerie richieste
 5. Avviare la compilazione  
 6. Caricare i file web sulla scheda
@@ -72,7 +74,7 @@ Verrà visualizzata la seguente interfaccia grafica.
 
 L'interfaccia è composta dei seguenti elementi:
 
-1. Indicatore sensori (i pallini neri negli indicatori *b* e *c* indicano il target attualmente impostato)
+1. Indicatore sensori (i pallini neri negli indicatori *b* e *c* indicano il target attualmente impostato), il range dell'indicatore è impostato [qui](https://github.com/fablab-imperia/orto-idroponico/blob/main/orto-controller-web/data/main.js#L18) con i parametri *min* e *max*:
    * a. Temperatura dell'acqua (range indicatore: 0-35 °C)
    * b. pH dell'acqua (range indicatore: 0-14)
    * c. Conducibilita dell'acqua (range indicatore: 0-3000 uS/cm)
@@ -97,6 +99,8 @@ L'interfaccia è composta dei seguenti elementi:
    * c. Il pulsante è normalmente disabilitato, viene attivato automaticamente quando si modifica uno o più dei precedenti parameteri (i parametri modificati vengono evidenziati in verde). Le modifiche dei parametri hanno effetti solo dopo il salvataggio. I dati salvati vengono mantenuti anche dopo lo spegnimento, perché memorizzati nella memoria EEPROM.
 
 5. Log dei dati grezzi ricevuti dall scheda, la visualizzazione può essere abilitata e disabilitata con il pulsante (3)
+
+I dati dei sensori e i parametri di stato (es controllo automatico/manuale, impostazioni salvate, attivazione manuale della pompa) vengono sincronizzati automaticamente in tempo reale su tutti i client connessi alla scheda.
 
 ## Licenza
 Sistema di gestione orto idroponico Fablab Imperia
