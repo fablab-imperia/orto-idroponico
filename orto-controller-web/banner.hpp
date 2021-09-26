@@ -2,8 +2,8 @@
 #define BANNER_HPP
 
 class Banner {
-    public:
-        static void printSerial();
+  public:
+    static void printSerial();
 };
 
 #endif

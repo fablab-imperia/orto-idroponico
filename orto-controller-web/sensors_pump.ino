@@ -24,8 +24,8 @@ void readSensorsAndStartPumps() {
   AnalogValues phValues;
   AnalogValues condValues;
 
-  phValues = phProbe.getAverageValue();
-  condValues = conductivityProbe.getAverageValue();
+  phValues = phProbe.getAverageValue(adc);
+  condValues = conductivityProbe.getAverageValue(adc);
 
   char timeString[20];
   lastswitch = millis();
@@ -84,8 +84,8 @@ void readAndShowSensorValues() {
   AnalogValues condValues;
   double temperatureC = 0.0;
 
-  phValues = phProbe.getAverageValue();
-  condValues = conductivityProbe.getAverageValue();
+  phValues = phProbe.getAverageValue(adc);
+  condValues = conductivityProbe.getAverageValue(adc);
   temperatureSensor.requestTemperatures();
   temperatureC = temperatureSensor.getTempCByIndex(0);
 

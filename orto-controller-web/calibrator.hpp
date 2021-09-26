@@ -4,13 +4,13 @@
 #include "line_fit.hpp"
 
 struct XYPair {
-    float X;
-    float Y;
+  float X;
+  float Y;
 };
 
 class Calibrator {
-    public:
-        static LineFit findBestFit(XYPair calibrationPoints[], unsigned int numberOfPoints);
+  public:
+    static LineFit findBestFit(XYPair calibrationPoints[], unsigned int numberOfPoints);
 };
 
 #endif

@@ -4,8 +4,8 @@
 
 
 struct LineFit {
-    float slope;
-    float intercept;
+  float slope;
+  float intercept;
 };
 
 #endif

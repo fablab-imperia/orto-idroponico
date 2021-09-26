@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "banner.hpp"
 
-void Banner::printSerial(){
+void Banner::printSerial() {
   Serial.println("***********************   Orto IDROPONICO 2.0   **************************");
 
   // Write:     Orto Idroponico

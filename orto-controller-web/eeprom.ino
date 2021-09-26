@@ -76,7 +76,7 @@ bool retrive_configuration () {
   uint8_t checksum = 0;
   for (uint8_t i = 0; i < EEPROM_USED_SIZE; i++) {
     uint8_t val = EEPROM.read(i);
-//    Serial.println(val, BIN);
+    //    Serial.println(val, BIN);
     checksum ^= val;
 
     if (i != 0) {
@@ -94,7 +94,7 @@ bool retrive_configuration () {
     return false;
   }
 
-  threshold_value_ph = EEPROM.read(1)/10.0;
+  threshold_value_ph = EEPROM.read(1) / 10.0;
   threshold_value_conductivity = EEPROM.read(2) + (EEPROM.read(3) << 8);
   time_peristaltic_pump_on = EEPROM.read(4) + (EEPROM.read(5) << 8) + (EEPROM.read(6) << 16);
   time_between_sensor_reads = EEPROM.read(7) + (EEPROM.read(8) << 8);
