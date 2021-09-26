@@ -5,6 +5,7 @@
 
 ### Sommario
 - [Schema di Montaggio](#schema-di-montaggio)
+- [Configurazione](#configurazione-e-calibrazione)
 - [Compilazione del Software](#compilazione-del-software)
   - [Arduino IDE](#arduino-ide)
   - [Visual Studio Code e PlatformIO](#visual-studio-code-e-platformio)
@@ -16,6 +17,12 @@
 I collegamenti ai pin sono definiti nel file ```pinouts.hpp``` e possono essere modificati opportunamente (prestando attenzione a non utilizzare impropriamente i pin riservati o con funzioni particolari, si veda il [pinout della scheda](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/pinouts/esp32-az-delivery.jpg) per i dettagli).
 
 ![alt Orto Idroponico Schematic](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/images/Schematic_Orto-Idroponico.png)
+
+# Configurazione e Calibrazione
+
+Prima di procedere con la compilazione del software è necessario assegnare a `condCalibrationPoints[]` e `phCalibrationPoints[]` i valori per la calibrazione dei sensori.
+
+Inoltre è possibile modificare i parametri principali dal file [parameters.hpp](https://github.com/fablab-imperia/orto-idroponico/blob/main/orto-controller-web/parameters.hpp) e i collegamenti con i pin della scheda dal file [pinouts.hpp](https://github.com/fablab-imperia/orto-idroponico/blob/main/orto-controller-web/pinouts.hpp)
 
 # Compilazione del Software
 
