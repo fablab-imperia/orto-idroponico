@@ -14,7 +14,7 @@
 
 # Schema di Montaggio
 
-I collegamenti ai pin sono definiti nel file ```pinouts.hpp``` e possono essere modificati opportunamente (prestando attenzione a non utilizzare impropriamente i pin riservati o con funzioni particolari, si veda il [pinout della scheda](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/pinouts/esp32-az-delivery.jpg) per i dettagli).
+I collegamenti ai pin sono definiti nel file `pinouts.hpp` e possono essere modificati opportunamente (prestando attenzione a non utilizzare impropriamente i pin riservati o con funzioni particolari, si veda il [pinout della scheda](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/pinouts/esp32-az-delivery.jpg) per i dettagli).
 
 ![alt Orto Idroponico Schematic](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/images/Schematic_Orto-Idroponico.png)
 
@@ -70,8 +70,8 @@ Per procedere con la compilazione mediante Visual Studio Code:
 6. Caricare i file web sulla scheda
 
 # Utilizzo e Interfaccia Grafica
-Dopo aver caricato correttamente il programma e i dati, la scheda crea una rete WiFi con SSID e password specificate [qui](https://github.com/fablab-imperia/orto-idroponico/blob/main/orto-controller-web/parameters.hpp#L22) (di default SSID ```OrtoWeb``` e password ```OrtoWeb12345```).
-Collegarsi con le credenziali corrette alla rete WiFi e, tramite un browser (es. Firefox, Chrome), connettersi all'indirizzo IP della scheda, stampato all'avvio sul monitor seriale (di default ```192.168.4.1```).
+Dopo aver caricato correttamente il programma e i dati, la scheda crea una rete WiFi con SSID e password specificate [qui](https://github.com/fablab-imperia/orto-idroponico/blob/main/orto-controller-web/parameters.hpp#L22) (di default SSID `OrtoWeb` e password `OrtoWeb12345`).
+Collegarsi con le credenziali corrette alla rete WiFi e, tramite un browser (es. Firefox, Chrome), connettersi all'indirizzo IP della scheda, stampato all'avvio sul monitor seriale (di default `192.168.4.1`).
 
 Verrà visualizzata la seguente interfaccia grafica.
 
@@ -92,7 +92,7 @@ L'interfaccia è composta dei seguenti elementi:
    * c. Attiva manualmente la pompa peristaltica dell'acido (per la correzione del pH) per la durata della pressione del pulsante (interrompe l'erogazione appena si rilascia il bottone)
    * d. Attiva/Disattiva la pompa per il ricircolo dell'acqua, alla pressione commuta il suo stato e la sua funzione (da Attiva a Disattiva e viceversa)
 
-3. Mastra o Nasconde i dati grezzi ricevuti dalla scheda, mostrati nella sezione (5) (di default sono nascosti)
+3. Mostra o Nasconde i dati grezzi ricevuti dalla scheda, mostrati nella sezione (5) (di default sono nascosti)
 
 4. Pannello di controllo automatico (attivabile con pulsante 2.a)
    * a. Pulsante per abilitare il controllo manuale, sospendento la correzione automatica di fertilizzante e pH e spegnendo la pompa di ricircolo; alla pressione questa sezione viene sostituita dalla sezione (2)
@@ -102,8 +102,8 @@ L'interfaccia è composta dei seguenti elementi:
      * c. durata di attivazione delle pompe di fertilizzante e acido in caso di correzione dei valori
      * d. tempo che intercorre tra due controlli e correzioni (attivazione pompe peristaltiche) successive
      * e. durata ciclo periodico di ricircolo dell'acqua
-     * f. tempo di attivazione della pompa per il ricircolo dell'acqua in ogni periodo definito al punto e
-   * c. Il pulsante è normalmente disabilitato, viene attivato automaticamente quando si modifica uno o più dei precedenti parameteri (i parametri modificati vengono evidenziati in verde). Le modifiche dei parametri hanno effetti solo dopo il salvataggio. I dati salvati vengono mantenuti anche dopo lo spegnimento, perché memorizzati nella memoria EEPROM.
+     * f. tempo di attivazione della pompa per il ricircolo dell'acqua in ogni periodo definito al punto *e*
+   * c. Il pulsante è normalmente disabilitato, viene attivato automaticamente quando si modifica uno o più dei precedenti parameteri (i parametri modificati vengono evidenziati in verde). Le modifiche dei parametri hanno effetto solo dopo il salvataggio. I dati salvati vengono mantenuti anche dopo lo spegnimento, perché memorizzati nella memoria EEPROM del controllore.
 
 5. Log dei dati grezzi ricevuti dall scheda, la visualizzazione può essere abilitata e disabilitata con il pulsante (3)
 
