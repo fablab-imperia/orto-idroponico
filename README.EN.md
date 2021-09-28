@@ -1,7 +1,7 @@
 # Hydroponic garden
 > Control system for hydroponic cultivation that allows the flow of water and partial correction of pH values and it's conductivity.
 
-*Read this in other languages: [Italiano](README.md).*
+*Read this in other languages: [Italiano :it:](README.md).*
 
 ### Summary
 - [Schematic](#schematic)
