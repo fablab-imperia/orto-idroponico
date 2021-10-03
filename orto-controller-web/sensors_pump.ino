@@ -28,8 +28,8 @@ void readSensorsAndStartPumps() {
   condValues = conductivityProbe.getAverageValue(adc);
 
   char timeString[20];
-  lastswitch = millis();
-  convertMillisToTimeString(timeString, 20, lastswitch);
+  lastcontrol = millis();
+  convertMillisToTimeString(timeString, 20, lastcontrol);
 
   // If PH value is found above threshold
   if (phValues.value > threshold_value_ph)
@@ -63,7 +63,7 @@ void readSensorsAndStartPumps() {
     Serial.print("---------FERTILIZER PUMP STARTS at ");
     Serial.println(timeString);
     delay(time_peristaltic_pump_on); // TODO: manage delay in loop with non-blocking code
-    acidPumpOff();
+    fertilizerPumpOff();
   }
   else
   {
@@ -100,7 +100,7 @@ void readAndShowSensorValues() {
   char timeString[20];
   char lastimeString[20];
   convertMillisToTimeString(timeString, 20, millis());
-  convertMillisToShortTimeString(lastimeString, 20, millis() - lastswitch);
+  convertMillisToShortTimeString(lastimeString, 20, millis() - lastcontrol);
   snprintf(messageBuffer , 20, "%s - %sm fa", timeString, lastimeString);
   lcd.print (messageBuffer);
   lcd.print("    ");          // Clear next cells

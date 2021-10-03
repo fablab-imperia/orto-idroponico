@@ -89,6 +89,7 @@ Relay acidPump = Relay(PIN_PERISTALTIC_PUMP_ACID);
 
 //TIMER
 unsigned long lastswitch = 0;
+unsigned long lastcontrol = 0;
 unsigned long lastping = 0;
 unsigned long lastdisplay = 0;
 
@@ -175,7 +176,7 @@ void loop() {
       Serial.println(lastping);
     }
   } else {
-    if ((millis() - lastdisplay) / 1000 >= time_between_sensor_reads) {
+    if ((millis() - lastcontrol) / 1000 >= time_between_sensor_reads) {
       readSensorsAndStartPumps();
     }
     if (time_water_pump_cycle) {
