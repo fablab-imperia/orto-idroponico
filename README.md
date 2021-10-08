@@ -101,7 +101,7 @@ L'interfaccia è composta dei seguenti elementi:
      * b. valore target della conducibilità
      * c. durata di attivazione delle pompe di fertilizzante e acido in caso di correzione dei valori
      * d. tempo che intercorre tra due controlli e correzioni (attivazione pompe peristaltiche) successive
-     * e. durata ciclo periodico di ricircolo dell'acqua
+     * e. durata ciclo periodico di ricircolo dell'acqua (se posto a 0 la pompa sarà sempre attiva e il parametro *f* verrà ignorato)
      * f. tempo di attivazione della pompa per il ricircolo dell'acqua in ogni periodo definito al punto *e*
    * c. Il pulsante è normalmente disabilitato, viene attivato automaticamente quando si modifica uno o più dei precedenti parameteri (i parametri modificati vengono evidenziati in verde). Le modifiche dei parametri hanno effetto solo dopo il salvataggio. I dati salvati vengono mantenuti anche dopo lo spegnimento, perché memorizzati nella memoria EEPROM del controllore.
 
