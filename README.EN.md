@@ -101,7 +101,7 @@ The interface consists of the following elements:
      * b. conductivity target value
      * c. duration of activation of the fertilizer and acid pumps in case of correction of the values
      * d. time between two successive checks and corrections (activation of peristaltic pumps)
-     * e. duration of the periodic water recirculation cycle
+     * e. duration of the periodic water recirculation cycle (if set to 0 the pump will always be active and parameter *f* will be ignored) 
      * f. activation time of the pump for water recirculation in each period defined in point *e*
    * c. The button is normally disabled, it is activated automatically when one or more of the previous parameters are modified (the modified parameters are highlighted in green). Parameter changes only take effect after saving. The saved data are kept even after switching off, because they are stored in the EEPROM memory of the controller.
 
