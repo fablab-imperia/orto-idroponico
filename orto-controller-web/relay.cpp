@@ -1,7 +1,7 @@
 #include "Arduino.h"
 #include "relay.hpp"
 
-Relay::Relay(unsigned int pinNumber, bool swithcesWhenHigh, bool isNormallyClosed) {
+Relay::Relay(unsigned int pinNumber, bool switchesWhenHigh, bool isNormallyClosed) {
 
   this->pinNumber = pinNumber;
   this->relayIsOpen = !isNormallyClosed;

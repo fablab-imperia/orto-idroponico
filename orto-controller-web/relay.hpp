@@ -3,7 +3,7 @@
 
 class Relay {
   public:
-    Relay(unsigned int pinNumber, bool switchesWhenHigh = false, bool isNormallyClosed = false);
+    Relay(unsigned int pinNumber, bool switchesWhenHigh = false, bool isNormallyClosed = true);
     void init();
     void turnOn();
     void turnOff();
