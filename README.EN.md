@@ -17,7 +17,7 @@
 
 The connections to the pins are defined in the file ` pinouts.hpp` and can be modified appropriately (taking care not to use the reserved pins or with particular functions improperly, see the [pinout of the board] (https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/pinouts/esp32-az-delivery.jpg) for details).
 
-![alt Orto Idroponico Schematic](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/images/Schematic_Orto-Idroponico.png)
+![alt Orto Idroponico Schematic](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/schematic-pcb/Schematic_Orto-Idroponico.png)
 
 # Configuration and Calibration
 

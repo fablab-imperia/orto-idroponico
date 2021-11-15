@@ -16,7 +16,7 @@
 
 I collegamenti ai pin sono definiti nel file `pinouts.hpp` e possono essere modificati opportunamente (prestando attenzione a non utilizzare impropriamente i pin riservati o con funzioni particolari, si veda il [pinout della scheda](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/pinouts/esp32-az-delivery.jpg) per i dettagli).
 
-![alt Orto Idroponico Schematic](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/images/Schematic_Orto-Idroponico.png)
+![alt Orto Idroponico Schematic](https://raw.githubusercontent.com/fablab-imperia/orto-idroponico/main/schematic-pcb/Schematic_Orto-Idroponico.png)
 
 # Configurazione e Calibrazione
 
