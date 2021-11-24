@@ -3,7 +3,8 @@
 
 *Read this in other languages: [English :uk: :us:](README.EN.md).*
 
-### Sommario
+# Sommario
+- [Componenti](#componenti)
 - [Schema di Montaggio](#schema-di-montaggio)
 - [Configurazione](#configurazione-e-calibrazione)
 - [Compilazione del Software](#compilazione-del-software)
@@ -11,6 +12,36 @@
   - [Visual Studio Code e PlatformIO](#visual-studio-code-e-platformio)
 - [Utilizzo e Interfaccia Grafica](#utilizzo-e-interfaccia-grafica)
 - [Licenza](#licenza)
+
+# Componenti
+Struttura e pompe:
+- x2 pompe peristaltiche 12V DC (per fertilizzante e acido)
+- Pompa di ricircolo dell'acqua 230V AC (ad esempio per acquari)
+- Tubi PVC e raccordi
+- Scatola di derivazione (sufficientemente grande da proteggere l'intera elettronica)
+- Struttura di sostegno, contenitori per acqua, acido e fertilizzante
+- Eventuale interruttore generale
+
+Elettronica:
+- ESP32 NodeMCU Development Board
+- Sonda pH e relativo modulo
+- Sensore Temperatura DS18B20 e relativo modulo
+- Sensore Conducibilità e relativo modulo
+- LM2596 convertitore step-down
+- Display LCD I2C 4x20 caratteri
+- Convertitore di livelli logici bidirezionale
+- Adafruit ADC ADS1115 (compatibile anche con ADS1015*)
+- Modulo con due Relé a Stato Solido
+- Modulo singolo Relé a Stato Solido HY-M285
+- x2 transistor BC337-40 (o equivalenti)
+- x2 resistori 680 Ω
+- Alimentatore 12V DC
+- PCB o altra soluzione di montaggio (es millefori)
+
+*È necessario definire il tipo di ADC utilizzato nel file [/orto-controller-web/parameters.hpp](/orto-controller-web/parameters.hpp#L30)
+
+Possono essere necessari anche altri componenti (cavi, viti...) e strumenti (trapano, saldatore...) utili alla realizzazione del progetto.
+
 
 # Schema di Montaggio
 
