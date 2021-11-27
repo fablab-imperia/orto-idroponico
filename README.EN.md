@@ -4,6 +4,7 @@
 *Read this in other languages: [Italiano :it:](README.md).*
 
 ### Summary
+- [Components](#components)
 - [Schematic](#schematic)
 - [Configuration and Calibration](#configuration-and-calibration)
 - [Compiling the Software](#compiling-the-software)
@@ -11,6 +12,36 @@
    - [Visual Studio Code and PlatformIO](#visual-studio-code-and-platformio)
 - [Use and Graphic Interface](#use-and-graphic-interface)
 - [License](#license)
+
+
+# Components
+Structure and pumps:
+- x2 peristaltic pumps 12V DC (for fertilizer and acid)
+- Water pump 230V AC (eg. aquarium pump )
+- PVC pipes and junctions
+- Junction box (big enough to protect all the electronics)
+- Support structure, water containers, acid and fertilizer
+- General switch (optional)
+
+Electronics:
+- ESP32 NodeMCU Development Board
+- pH probe and module
+- Temperature sensoe DS18B20 and module
+- Conductivity sensor and module
+- LM2596 step-down converter
+- Display LCD I2C 4x20 chars
+- Bidirectional logic converter (3.3-5V)
+- Adafruit ADC ADS1115 (also compatible with ADS1015*)
+- Two Solid State Relay Module
+- Single Solid State Relay Module HY-M285
+- x2 transistor BC337-40 (or equivalent)
+- x2 resistors 680 Ω
+- 12V DC Power Supply
+- PCB or other mounting solution (eg. prototyping boards)
+
+*You need to change ADC type in file [/orto-controller-web/parameters.hpp](/orto-controller-web/parameters.hpp#L30)
+
+You might need other components (wires, screws...) and tools (drill, soldering iron...) to complete this project.
 
 
 # Schematic
@@ -101,7 +132,7 @@ The interface consists of the following elements:
      * b. conductivity target value
      * c. duration of activation of the fertilizer and acid pumps in case of correction of the values
      * d. time between two successive checks and corrections (activation of peristaltic pumps)
-     * e. duration of the periodic water recirculation cycle (if set to 0 the pump will always be active and parameter *f* will be ignored) 
+     * e. duration of the periodic water recirculation cycle (if set to 0 the pump will always be active and parameter *f* will be ignored)
      * f. activation time of the pump for water recirculation in each period defined in point *e*
    * c. The button is normally disabled, it is activated automatically when one or more of the previous parameters are modified (the modified parameters are highlighted in green). Parameter changes only take effect after saving. The saved data are kept even after switching off, because they are stored in the EEPROM memory of the controller.
 
