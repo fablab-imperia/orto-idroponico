@@ -190,3 +190,453 @@ void loop() {
     }
   }
 }
+
+void acidPumpOff() {
+  acidPump.turnOff();
+  char timeString[20];
+  lastswitch = millis();
+  convertMillisToTimeString(timeString, 20, lastswitch);
+  Serial.print("---------ACID PUMP STOPS at ");
+  Serial.println(timeString);
+}
+
+
+
+void fertilizerPumpOff() {
+  fertilizerPump.turnOff();
+  char timeString[20];
+  lastswitch = millis();
+  convertMillisToTimeString(timeString, 20, lastswitch);
+  Serial.print("---------FERTILIZER PUMP STOPS at ");
+  Serial.println(timeString);
+}
+
+
+
+void readSensorsAndStartPumps() {
+  AnalogValues phValues;
+  AnalogValues condValues;
+
+  phValues = phProbe.getAverageValue(adc);
+  condValues = conductivityProbe.getAverageValue(adc);
+
+  char timeString[20];
+  lastcontrol = millis();
+  convertMillisToTimeString(timeString, 20, lastcontrol);
+
+  // If PH value is found above threshold
+  if (phValues.value > threshold_value_ph)
+  {
+    Serial.println("---------PH LEVEL OVER THRESHOLD: NEED TO START ACID PUMP");
+    //start acid pump
+    acidPump.turnOn();
+    Serial.print("---------ACID PUMP STARTS at ");
+    Serial.println(timeString);
+    //schedule a task for stopping the pump after specific number of seconds
+    delay(time_peristaltic_pump_on);  // TODO: manage delay in loop with non-blocking code
+    acidPumpOff();
+  }
+  else
+  {
+    Serial.print("PH IS ");
+    Serial.println(phValues.value);
+    Serial.print("THRESHOLD IS ");
+    Serial.println(threshold_value_ph);
+    Serial.print("NO NEED TO ACTIVATE PUMP AT ");
+    Serial.println(timeString);
+  }
+
+
+  // If conductivity value is found below threshold
+  if (condValues.value < threshold_value_conductivity)
+  {
+    Serial.println("---------CONDUCTIVITY LEVEL UNDER THRESHOLD: NEED TO START FERTILIZER PUMP");
+    //start fertilizer pump
+    fertilizerPump.turnOn();
+    Serial.print("---------FERTILIZER PUMP STARTS at ");
+    Serial.println(timeString);
+    delay(time_peristaltic_pump_on); // TODO: manage delay in loop with non-blocking code
+    fertilizerPumpOff();
+  }
+  else
+  {
+    Serial.print("CONDUCTIVITY IS ");
+    Serial.println(condValues.value);
+    Serial.print("THRESHOLD IS ");
+    Serial.println(threshold_value_conductivity);
+    Serial.print("NO NEED TO ACTIVATE PUMP AT ");
+    Serial.println(timeString);
+  }
+
+}
+
+void readAndShowSensorValues() {
+  lastdisplay = millis();
+
+  AnalogValues phValues;
+  AnalogValues condValues;
+  double temperatureC = 0.0;
+
+  phValues = phProbe.getAverageValue(adc);
+  condValues = conductivityProbe.getAverageValue(adc);
+  temperatureSensor.requestTemperatures();
+  temperatureC = temperatureSensor.getTempCByIndex(0);
+
+
+  //buffer for output
+  char messageBuffer[20];
+  //buffer for doubles that must be converted to strings
+  char valueBuffer[10];
+
+
+  lcd.setCursor(0, 3);        // Overwrite last line
+  char timeString[20];
+  char lastimeString[20];
+  convertMillisToTimeString(timeString, 20, millis());
+  convertMillisToShortTimeString(lastimeString, 20, millis() - lastcontrol);
+  snprintf(messageBuffer , 20, "%s - %sm fa", timeString, lastimeString);
+  lcd.print (messageBuffer);
+  lcd.print("    ");          // Clear next cells
+
+  //clear display
+  //lcd.clear();
+  lcd.setCursor(0, 0); // Set cursor to starting position instead of clear() to reduce flickering
+
+  //dtostrf(phValues.voltage, 3, 1, voltageBuffer);
+  dtostrf(phValues.value, 4, 1, valueBuffer);
+  snprintf(messageBuffer, 20, "pH :%s   ", valueBuffer); // VPH:%s  , voltageBuffer
+  //Serial.println(messageBuffer);
+
+  lcd.print(messageBuffer);
+  //lcd.setCursor(0,1);
+
+  //dtostrf(condValues.voltage, 4, 1, voltageBuffer);
+  dtostrf(condValues.value, 5, 1, valueBuffer);
+  snprintf(messageBuffer, 20, "CND:%s ", valueBuffer); //VCD:%s  , voltageBuffer
+  //Serial.println(messageBuffer);
+  lcd.print(messageBuffer);
+  lcd.print("    ");          // Clear next cells
+  lcd.setCursor(0, 1);
+
+  dtostrf(temperatureC, 5, 1, valueBuffer);
+  snprintf(messageBuffer , 20, "TMP:%s", valueBuffer);
+  //Serial.println(messageBuffer);
+  lcd.print(messageBuffer);
+
+  lcd.print("    ");          // Clear next cells
+
+
+  doc["temp"] = temperatureC;
+  doc["ph"] = phValues.value;
+  doc["cond"] = condValues.value;
+
+
+  send_current_status();
+}
+
+void convertMillisToTimeString(char* timeString, int timeStringSize, long millis) {
+  long total = millis / 1000;
+  int seconds = total % 60;
+  total = total / 60;
+  int minutes = total % 60;
+  total = total / 60;
+  int hours = total % 24;
+  int days = total / 24;
+  if (days == 0) {
+    snprintf(timeString, timeStringSize, "%d:%d:%d", hours, minutes, seconds);
+  }
+  else
+  {
+    snprintf(timeString, timeStringSize, "%dd %d:%d:%d", days, hours, minutes, seconds);
+  }
+}
+void convertMillisToShortTimeString(char* timeString, int timeStringSize, long millis) {
+  long total = millis / 1000;
+  total = total / 60;
+  int minutes = total % 60;
+  total = total / 60;
+  int hours = total % 24;
+  snprintf(timeString, timeStringSize, "%d:%d", hours, minutes);
+}
+
+
+// EEPROM memory map
+/*
+  /-------------------------------------------------------------------------\
+  | address |                 parameter                 |  unit of measure  |
+  |-------------------------------------------------------------------------|
+  | 0       | checksum*                                 |      -            |
+  | 1       | threshold_value_ph*100                    |      pH           |
+  | 2       | threshold_value_conductivity   LOW BYTE   |      uS/cm        |
+  | 3       | threshold_value_conductivity   HIGH BYTE  |      uS/cm        |
+  | 4       | time_peristaltic_pump_on  LOW BYTE        |      ms           |
+  | 5       | time_peristaltic_pump_on  MIDDLE BYTE     |      ms           |
+  | 6       | time_peristaltic_pump_on  HIGH BYTE       |      ms           |
+  | 7       | time_between_sensor_reads  LOW BYTE       |      s            |
+  | 8       | time_between_sensor_reads  HIGH BYTE      |      s            |
+  | 9       | time_water_pump_cycle  LOW BYTE           |      s            |
+  | 10      | time_water_pump_cycle  MIDDLE BYTE        |      s            |
+  | 11      | time_water_pump_cycle  HIGH BYTE          |      s            |
+  | 12      | time_water_pump_active  LOW BYTE          |      s            |
+  | 13      | time_water_pump_active  MIDDLE BYTE       |      s            |
+  | 14      | time_water_pump_active  HIGH BYTE         |      s            |
+  \-------------------------------------------------------------------------/
+
+  the checksum byte is calculated as the XOR of bytes from 1 to 14 (included)
+  so the XOR of bytes from 1 to 14 (included) should be 0 for valid data
+
+  NOTE: in case of invalid checksum or if all 14 bytes are 0 or 255 will be used the default parameters
+
+*/
+
+
+void save_configuration (char parameter) {
+  switch (parameter) {
+    case '0':
+      EEPROM.write(1, (uint8_t)(threshold_value_ph * 10));
+      break;
+    case '1':
+      EEPROM.write(2, (threshold_value_conductivity & 0b0000000011111111));
+      EEPROM.write(3, (threshold_value_conductivity & 0b1111111100000000) >> 8);
+      break;
+    case '2':
+      EEPROM.write(4, (time_peristaltic_pump_on & 0b000000000000000011111111));
+      EEPROM.write(5, (time_peristaltic_pump_on & 0b000000001111111100000000) >> 8);
+      EEPROM.write(6, (time_peristaltic_pump_on & 0b111111110000000000000000) >> 16);
+      break;
+    case '3':
+      EEPROM.write(7, (time_between_sensor_reads & 0b0000000011111111));
+      EEPROM.write(8, (time_between_sensor_reads & 0b1111111100000000) >> 8);
+      break;
+    case '4':
+      EEPROM.write(9, (time_water_pump_cycle & 0b000000000000000011111111));
+      EEPROM.write(10, (time_water_pump_cycle & 0b000000001111111100000000) >> 8);
+      EEPROM.write(11, (time_water_pump_cycle & 0b111111110000000000000000) >> 16);
+      break;
+    case '5':
+      EEPROM.write(12, (time_water_pump_active & 0b000000000000000011111111));
+      EEPROM.write(13, (time_water_pump_active & 0b000000001111111100000000) >> 8);
+      EEPROM.write(14, (time_water_pump_active & 0b111111110000000000000000) >> 16);
+      break;
+  }
+
+  EEPROM.commit();
+  delay(10);                            // Delay just to be safe
+
+  if (parameter == '5') {
+    EEPROM.write(0, calculate_checksum());
+    EEPROM.commit();
+  }
+}
+
+bool retrive_configuration () {
+  bool is_0 = true;
+  bool is_1 = true;
+
+  uint8_t checksum = 0;
+  for (uint8_t i = 0; i < EEPROM_USED_SIZE; i++) {
+    uint8_t val = EEPROM.read(i);
+    //    Serial.println(val, BIN);
+    checksum ^= val;
+
+    if (i != 0) {
+      if (val != 0b00000000) {
+        is_0 = false;
+      }
+      if (val != 0b11111111) {
+        is_1 = false;
+      }
+    }
+  }
+
+  if (is_0 || is_1 || checksum != 0) {
+    Serial.println("Invalid parameters or checksum, using default values");
+    return false;
+  }
+
+  threshold_value_ph = EEPROM.read(1) / 10.0;
+  threshold_value_conductivity = EEPROM.read(2) + (EEPROM.read(3) << 8);
+  time_peristaltic_pump_on = EEPROM.read(4) + (EEPROM.read(5) << 8) + (EEPROM.read(6) << 16);
+  time_between_sensor_reads = EEPROM.read(7) + (EEPROM.read(8) << 8);
+  time_water_pump_cycle = EEPROM.read(9) + (EEPROM.read(10) << 8) + (EEPROM.read(11) << 16);
+  time_water_pump_active = EEPROM.read(12) + (EEPROM.read(13) << 8) + (EEPROM.read(14) << 16);
+
+  return true;
+}
+
+uint8_t calculate_checksum () {
+  uint8_t checksum = 0;
+  for (uint8_t i = 1; i < EEPROM_USED_SIZE; i++) {
+    checksum ^= EEPROM.read(i);
+  }
+
+  return checksum;
+}
+
+// END EEPROM memory
+
+// WEB
+
+void send_current_status () {
+  doc["pump_on"] = waterPump.isOn();
+  doc["manual_control"] = manual_control;
+  doc["ph_th"] = threshold_value_ph;
+  doc["cond_th"] = threshold_value_conductivity;
+  doc["t_peristaltic"] = time_peristaltic_pump_on;
+  doc["t_reads"] = time_between_sensor_reads;
+  doc["t_pump_cycle"] = time_water_pump_cycle;
+  doc["t_pump_active"] = time_water_pump_active;
+
+
+  char payload[800];
+  serializeJson(doc, payload);
+
+  notifyClients(payload);
+}
+
+void fs_web_init() {
+
+  SPIFFS.begin();
+  {
+    File root = SPIFFS.open("/");
+    File file = root.openNextFile();
+    while (file) {
+      String fileName = file.name();
+      size_t fileSize = file.size();
+      Serial.printf("FS File: %s, size: %s\n", fileName.c_str(), formatBytes(fileSize).c_str());
+      file = root.openNextFile();
+    }
+    Serial.printf("\n");
+  }
+
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/index.html", "text/html");
+  });
+  server.on("/index.html", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/index.html", "text/html");
+  });
+  server.on("/style.css", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/style.css", "text/css");
+  });
+  server.on("/main.js", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/main.js", "application/javascript");
+  });
+  server.on("/manual_control.js", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/manual_control.js", "application/javascript");
+  });
+  server.on("/automatic_config.js", HTTP_GET, [](AsyncWebServerRequest * request) {
+    request->send(SPIFFS, "/automatic_config.js", "application/javascript");
+  });
+
+  initWebSocket();
+
+  // Start server
+  server.begin();
+
+}
+
+void notifyClients(String payload) {
+  ws.textAll(payload);
+}
+
+void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType type, void *arg, uint8_t *data, size_t len) {
+  switch (type) {
+    case WS_EVT_CONNECT:
+      Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+      break;
+    case WS_EVT_DISCONNECT:
+      Serial.printf("WebSocket client #%u disconnected\n", client->id());
+      break;
+    case WS_EVT_DATA:
+      char payload = *data;
+      Serial.println(payload);
+
+      if (payload == 'M') {           // Manual Control
+        manual_control = true;
+        acidPump.turnOff();
+        fertilizerPump.turnOff();
+        waterPump.turnOff();
+        manual_peristaltic_active = false;
+      } else if (payload == 'U') {    // aUtomatic Control
+        manual_control = false;
+        acidPump.turnOff();
+        fertilizerPump.turnOff();
+        waterPump.turnOff();
+        manual_peristaltic_active = false;
+      }
+
+      if (manual_control) {
+        if (payload == 'F') {
+          fertilizerPump.turnOn();
+          manual_peristaltic_active = true;
+          lastping = millis();
+        } else if (payload == 'A') {
+          acidPump.turnOn();
+          manual_peristaltic_active = true;
+          lastping = millis();
+        } else if (payload == 'P') {
+          waterPump.turnOn();
+        } else if (payload == 'f') {
+          fertilizerPump.turnOff();
+          manual_peristaltic_active = false;
+          lastping = millis();
+        } else if (payload == 'a') {
+          acidPump.turnOff();
+          manual_peristaltic_active = false;
+          lastping = millis();
+        } else if (payload == 'p') {
+          waterPump.turnOff();
+        }
+      }
+
+      if (payload >= '0' && payload <= '5') {
+        String value_string = "";
+        int i = 1;
+        while (*(data + i) != ';' && i < 15) {
+          value_string += (char) * (data + i);
+          i++;
+        }
+
+        if (payload == '0') {
+          threshold_value_ph = value_string.toFloat();
+        } else if (payload == '1') {
+          threshold_value_conductivity = value_string.toInt();
+        } else if (payload == '2') {
+          time_peristaltic_pump_on = value_string.toInt();
+        } else if (payload == '3') {
+          time_between_sensor_reads = value_string.toInt();
+        } else if (payload == '4') {
+          time_water_pump_cycle = value_string.toInt();
+        } else if (payload == '5') {
+          time_water_pump_active = value_string.toInt();
+        }
+
+        save_configuration(payload);
+      }
+
+      send_current_status();
+
+      break;
+      /*    case WS_EVT_PONG:
+          case WS_EVT_ERROR:
+            break;
+      */
+  }
+}
+
+void initWebSocket() {
+  ws.onEvent(onEvent);
+  server.addHandler(&ws);
+}
+
+String formatBytes(size_t bytes) {
+  if (bytes < 1024) {
+    return String(bytes) + "B";
+  } else if (bytes < (1024 * 1024)) {
+    return String(bytes / 1024.0) + "KB";
+  } else if (bytes < (1024 * 1024 * 1024)) {
+    return String(bytes / 1024.0 / 1024.0) + "MB";
+  } else {
+    return String(bytes / 1024.0 / 1024.0 / 1024.0) + "GB";
+  }
+}

@@ -92,6 +92,6 @@
 #define ADAFRUIT_ADC Adafruit_ADS1015
 #else
 #error "No ADC type definition, define the used type in parameters.hpp (https://github.com/fablab-imperia/orto-idroponico)";
-#endif*/
+#endif
 
 #endif
