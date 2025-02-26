@@ -33,6 +33,8 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 
+#include <ESPAsyncWiFiManager.h>
+#include <DNSServer.h>
 
 //Includes for our own pin definitions and setups
 #include "pinouts.hpp"
@@ -50,6 +52,7 @@
 // Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 AsyncWebSocket ws("/ws");
+DNSServer dns;
 
 // JSON buffer
 StaticJsonDocument<800> doc;
@@ -143,11 +146,21 @@ void setup() {
   waterPump.turnOff();
 
 
-  WiFi.softAP(ORTO_WEB_SSID_BASENAME, ORTO_WEB_SSID_PASSWD);
 
-  IPAddress IP = WiFi.softAPIP();
-  Serial.print("AP IP address: ");
-  Serial.println(IP);
+  AsyncWiFiManager wifiManager(&server, &dns);
+
+  // Avvia la modalità AP se non riesce a connettersi
+  if (!wifiManager.autoConnect(ORTO_WEB_SSID_BASENAME, ORTO_WEB_SSID_PASSWD)) {
+      Serial.println("Connessione fallita, riavvio...");
+      delay(3000);
+      ESP.restart();
+  }
+
+
+  // WiFi.softAP(ORTO_WEB_SSID_BASENAME, ORTO_WEB_SSID_PASSWD);
+  // IPAddress IP = WiFi.softAPIP();
+  // Serial.print("AP IP address: ");
+  // Serial.println(IP);
 
   fs_web_init();
 
@@ -543,6 +556,7 @@ void onEvent(AsyncWebSocket *server, AsyncWebSocketClient *client, AwsEventType 
   switch (type) {
     case WS_EVT_CONNECT:
       Serial.printf("WebSocket client #%u connected from %s\n", client->id(), client->remoteIP().toString().c_str());
+      client->text("Benvenuto su ESP32 WebSocket!");
       break;
     case WS_EVT_DISCONNECT:
       Serial.printf("WebSocket client #%u disconnected\n", client->id());
